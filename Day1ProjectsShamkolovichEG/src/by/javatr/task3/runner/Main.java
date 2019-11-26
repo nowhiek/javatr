@@ -3,14 +3,14 @@ package by.javatr.task3.runner;
 import by.javatr.scanner.DataScanner;
 import by.javatr.task3.entity.Square;
 import by.javatr.task3.util.SquareOperation;
-import by.javatr.task3.validate.Validator;
+import by.javatr.task3.util.validator.ValidatorArea;
 
 public class Main {
 
     public static void main(String[] args) {
         double area = DataScanner.getIntValue();
 
-        if (new Validator().validate(area)) {
+        if (new ValidatorArea().validate(area)) {
 
             Square square = new Square(area);
 

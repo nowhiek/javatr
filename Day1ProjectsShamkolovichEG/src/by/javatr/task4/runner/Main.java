@@ -14,7 +14,7 @@ public class Main {
 
             int[] array = new int[] {a,b,c,d};
 
-            System.out.println(new NumberOperation().isMoreThanTwoEvenNumbers(array));
+            System.out.println(NumberOperation.isMoreThanTwoEvenNumbers(array));
 
     }
 }

@@ -2,7 +2,7 @@ package by.javatr.task2.runnner;
 
 import by.javatr.scanner.DataScanner;
 import by.javatr.task2.util.DateOperation;
-import by.javatr.task2.validate.Validator;
+import by.javatr.task2.util.validator.ValidatorDate;
 
 public class Main {
 
@@ -11,7 +11,7 @@ public class Main {
         int year = DataScanner.getIntValue();
         int month = DataScanner.getIntValue();
 
-        if (new Validator().validate(year, month)){
+        if (new ValidatorDate().validate(year, month)){
             System.out.println(new DateOperation().getCountDaysInCurrentMonth(year, month));
         }else{
             //TODO throw new Exception

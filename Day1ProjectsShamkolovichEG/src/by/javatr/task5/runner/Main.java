@@ -2,14 +2,14 @@ package by.javatr.task5.runner;
 
 import by.javatr.scanner.DataScanner;
 import by.javatr.task5.util.NumberOperation;
-import by.javatr.task5.validate.Validator;
+import by.javatr.task5.util.validator.ValidatorNumber;
 
 public class Main {
 
     public static void main(String[] args) {
         int number = DataScanner.getIntValue();
 
-        if (new Validator().validate(number)) {
+        if (new ValidatorNumber().validate(number)) {
             System.out.println(NumberOperation.isPerfectNumber(number));
         }else {
             //TODO throw new Exception

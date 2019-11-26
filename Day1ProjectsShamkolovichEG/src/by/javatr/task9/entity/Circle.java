@@ -1,13 +1,13 @@
 package by.javatr.task9.entity;
 
 public class Circle {
-    private int radius;
+    private double radius;
 
-    public int getRadius() {
+    public double getRadius() {
         return radius;
     }
 
-    public void setRadius(int radius) {
+    public void setRadius(double radius) {
         this.radius = radius;
     }
 
@@ -15,7 +15,7 @@ public class Circle {
         this.radius = 0;
     }
 
-    public Circle(int radius) {
+    public Circle(double radius) {
         this.radius = radius;
     }
 

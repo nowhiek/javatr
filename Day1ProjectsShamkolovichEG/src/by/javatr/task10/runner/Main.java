@@ -2,6 +2,7 @@ package by.javatr.task10.runner;
 
 import by.javatr.scanner.DataScanner;
 import by.javatr.task10.util.NumberOperation;
+import by.javatr.task10.util.validator.ValidatorRange;
 
 public class Main {
 
@@ -10,6 +11,11 @@ public class Main {
         int b = DataScanner.getIntValue();
         int step = DataScanner.getIntValue();
 
-        System.out.print(NumberOperation.getFunctionValueInRange(a, b, step));
+        if (new ValidatorRange().validate(a, b)) {
+            System.out.print(NumberOperation.getFunctionValueInRange(a, b, step));
+        }else{
+            //TODO throw new Exception
+            System.out.print("Something's gone wrong");
+        }
     }
 }
