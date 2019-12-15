@@ -1,33 +1,37 @@
 package by.javatr.basket;
 
 import by.javatr.basket.entity.*;
-import by.javatr.basket.util.BallException;
-import by.javatr.basket.util.BasketImpl;
-import by.javatr.basket.util.validator.WeightValidator;
+import by.javatr.basket.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        SoccerBall soccerBall1 = new SoccerBall(21.0, ColorEnum.BLUE);
-        SoccerBall soccerBall2 = new SoccerBall(23.2, ColorEnum.GREEN);
-        Ball soccerBall3 = new SoccerBall(19.9, ColorEnum.LIGHT_BLUE);
-        Ball soccerBall4 = new SoccerBall(12.4, ColorEnum.ORANGE);
-        SoccerBall soccerBall5 = new SoccerBall(25.9, ColorEnum.GREEN);
-
-        TennisBall tennisBall = new TennisBall(3.1, ColorEnum.BLUE);
-
-        Ball[] balls = new Ball[] {soccerBall1, soccerBall2, soccerBall3, soccerBall4, soccerBall5, tennisBall};
-
-        Basket basket = new Basket(balls);
-        BasketImpl impl = new BasketImpl(basket);
-
-        impl.addBall(soccerBall1);
-        impl.addBall(soccerBall1);
-
         try {
-            for(int i = 0; i < basket.getBalls().length; i++){
-                WeightValidator.validate(basket.getBalls()[i]);
-            }
+            Basket basket = new Basket(6);
+
+            SoccerBall soccerBall1 = new SoccerBall(21.0, ColorEnum.BLUE, 4);
+            SoccerBall soccerBall2 = new SoccerBall(23.2, ColorEnum.GREEN, 3);
+            Ball soccerBall3 = new SoccerBall(19.9, ColorEnum.LIGHT_BLUE, 4);
+            Ball soccerBall4 = new SoccerBall(12.4, ColorEnum.ORANGE, 4);
+            SoccerBall soccerBall5 = new SoccerBall(25.9, ColorEnum.GREEN, 4);
+
+            TennisBall tennisBall = new TennisBall(3.1, ColorEnum.BLUE, "Premium");
+
+            basket.addBall(soccerBall1);
+            basket.addBall(soccerBall2);
+            basket.addBall(soccerBall3);
+            basket.addBall(soccerBall4);
+            basket.addBall(soccerBall5);
+            basket.addBall(tennisBall);
+
+            basket.removeBall(soccerBall3);
+            basket.addBall(soccerBall3);
+            basket.removeBall(soccerBall3);
+
+            basket.addBall(soccerBall4);
+
+
+            BasketImpl impl = new BasketImpl(basket);
 
             double avg = impl.getCommonWeightBallsInBasket();
             long count = impl.getCountBlueBallsInBasket();
@@ -36,8 +40,18 @@ public class Main {
 
             System.out.println("Common weight: " + avg);
             System.out.println("Count blue balls: " + count);
-        }catch (BallException e){
-            e.printStackTrace();
+        }catch (InvalidBallWeightException e){
+            System.out.println("Oh, trouble with ball weight.\n" + e.getMessage());
+        }catch (InvalidBallColorException e){
+            System.out.println("Oh, trouble with ball color.\n" + e.getMessage());
+        }catch (InvalidBallSizeException e){
+            System.out.println("Oh, trouble with soccer ball size.\n" + e.getMessage());
+        } catch (InvalidBallStatusException e) {
+            System.out.println("Oh, trouble with tennis ball status.\n" + e.getMessage());
+        } catch (CloneNotSupportedException e) {
+            System.out.println("Oh, trouble with cloning.\n" + e.getMessage());
         }
+
+        //In the catch block, we can do something to solve the problem.
     }
 }

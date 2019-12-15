@@ -15,14 +15,14 @@ public enum ColorEnum {
         this.title = title;
     }
 
-    ColorEnum(){}
-
     public String getTitle() {
         return title;
     }
 
     @Override
     public String toString() {
-        return "{Color - " + title + "}";
+        return "Color - " + title;
     }
+
+
 }

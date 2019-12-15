@@ -1,10 +1,7 @@
 package by.javatr.basket.util;
 
-import by.javatr.basket.entity.Ball;
 import by.javatr.basket.entity.Basket;
 import by.javatr.basket.entity.ColorEnum;
-
-import java.util.Arrays;
 
 public class BasketImpl implements BasketFeatures{
 
@@ -18,25 +15,26 @@ public class BasketImpl implements BasketFeatures{
     }
 
     @Override
-    public void addBall(Ball ball) {
-        Ball[] tmp = basket.getBalls();
+    public double getCommonWeightBallsInBasket() throws CloneNotSupportedException{
+        double sumBallWeight = 0;
 
-        basket.setBalls(new Ball[tmp.length + 1]);
-
-        for (int i = 0; i < tmp.length; i++){
-            basket.getBalls()[i] = tmp[i];
+        for(int i = 0; i < basket.getCapacity(); i++){
+            if (basket.getBall(i) != null)
+                sumBallWeight += basket.getBall(i).getBallWeight();
         }
 
-        basket.getBalls()[tmp.length] = ball;
+        return sumBallWeight;
     }
 
     @Override
-    public double getCommonWeightBallsInBasket() {
-        return Arrays.stream(basket.getBalls()).mapToDouble(b -> b.getBallWeight()).sum();
-    }
+    public long getCountBlueBallsInBasket() throws CloneNotSupportedException{
+        int countBlueBalls = 0;
 
-    @Override
-    public long getCountBlueBallsInBasket() {
-        return Arrays.stream(basket.getBalls()).filter((b) -> b.getBallColor().equals(ColorEnum.BLUE)).count();
+        for (int i = 0; i < basket.getCapacity(); i++){
+            if (basket.getBall(i) != null && basket.getBall(i).getBallColor().equals(ColorEnum.BLUE))
+                countBlueBalls++;
+        }
+
+        return countBlueBalls;
     }
 }

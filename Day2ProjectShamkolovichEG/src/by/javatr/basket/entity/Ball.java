@@ -1,22 +1,22 @@
 package by.javatr.basket.entity;
 
-public abstract class Ball {
+import by.javatr.basket.util.InvalidBallColorException;
+import by.javatr.basket.util.InvalidBallWeightException;
+import by.javatr.basket.util.validator.ColorValidator;
+import by.javatr.basket.util.validator.WeightValidator;
+
+public abstract class Ball implements Cloneable{
     protected double weight;
     protected ColorEnum color;
-
-    public Ball(double weight, ColorEnum color) {
-        this.weight = weight;
-        this.color = color;
-    }
-
-    public Ball() {
-    }
 
     public double getBallWeight() {
         return weight;
     }
 
-    public void setBallWeight(double weight) {
+    public void setBallWeight(double weight) throws InvalidBallWeightException {
+        if (!WeightValidator.validate(weight))
+            throw new InvalidBallWeightException("The method received an invalid ball weight.");
+
         this.weight = weight;
     }
 
@@ -24,8 +24,32 @@ public abstract class Ball {
         return color;
     }
 
-    public void setBallColor(ColorEnum color) {
+    public void setBallColor(ColorEnum color) throws InvalidBallColorException {
+        if (!ColorValidator.validate(color))
+            throw new InvalidBallColorException("The method received an invalid ball color.");
+
         this.color = color;
+    }
+
+    protected Ball(double weight, ColorEnum color) throws InvalidBallWeightException, InvalidBallColorException{
+        setBallWeight(weight);
+        setBallColor(color);
+    }
+
+    protected Ball() {
+        this.weight = 1.0;
+        this.color = ColorEnum.RED;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+
+        result = prime * result + Double.valueOf(weight).hashCode();
+        result = prime * result + ((color == null) ? 0 : color.hashCode());
+
+        return result;
     }
 
     @Override
@@ -39,7 +63,7 @@ public abstract class Ball {
 
         Ball tmp = (Ball)obj;
 
-        if (weight != tmp.weight)
+        if (Double.doubleToLongBits(weight) != Double.doubleToLongBits(tmp.weight))
             return false;
         if (color == null){
             if (tmp.color != null)
@@ -53,6 +77,11 @@ public abstract class Ball {
 
     @Override
     public String toString() {
-        return "[TennisBall - " + weight + ", " + color + "]";
+        return "[" + getClass().getName() + " weight - " + weight + ", color - " + color + "]";
+    }
+
+    @Override
+    public Ball clone() throws CloneNotSupportedException {
+        return (Ball) super.clone();
     }
 }
