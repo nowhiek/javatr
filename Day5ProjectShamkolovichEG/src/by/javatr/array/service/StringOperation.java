@@ -1,10 +1,8 @@
 package by.javatr.array.service;
 
-import by.javatr.array.entity.Array;
-
 public class StringOperation {
 
-    public static Array getArrayFromLine(String line){
+    public static int[] getArrayFromLine(String line){
         String[] splitLine = line.split(RegexString.WHITESPACE);
 
         int[] intArray = new int[splitLine.length];
@@ -13,6 +11,18 @@ public class StringOperation {
             intArray[i] = Integer.parseInt(splitLine[i]);
         }
 
-        return new Array(intArray);
+        return intArray;
+    }
+
+    public static boolean isThreeNotSameDigits(String str){
+        if (str.length() != 3)
+            return false;
+
+        for (char c : str.toCharArray()) {
+            if (str.indexOf(c) != str.lastIndexOf(c))
+                return false;
+        }
+
+        return true;
     }
 }

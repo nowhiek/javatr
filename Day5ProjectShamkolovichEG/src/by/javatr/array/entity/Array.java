@@ -3,6 +3,7 @@ package by.javatr.array.entity;
 import by.javatr.array.service.InvalidArrayException;
 import by.javatr.array.service.ArraySortOption;
 import by.javatr.array.service.NumberOperation;
+import by.javatr.array.service.StringOperation;
 
 public class Array implements ArraySortOption {
 
@@ -92,17 +93,35 @@ public class Array implements ArraySortOption {
         return new Array(tmp);
     }
 
-    private int rank(int element, int low, int high) throws InvalidArrayException {
+    public Array getOnlyThreeNotSameDigitsInArray() throws InvalidArrayException {
         if (array == null || array.length == 0)
             throw new InvalidArrayException("Array has an invalid length.");
 
+        int count = 0;
+        int[] tmp = new int[array.length];
+
+        for (int i = 0; i < array.length; i++){
+            if (StringOperation.isThreeNotSameDigits(String.valueOf(Math.abs(array[i]))))
+                tmp[count++] = array[i];
+        }
+
+        return new Array(tmp);
+    }
+
+    public int binarySearch(int element) throws InvalidArrayException {
+        if (array == null || array.length == 0)
+            throw new InvalidArrayException("Array has an invalid length.");
+
+        return rank(element, 0, array.length - 1);
+    }
+
+    private int rank(int element, int low, int high) throws InvalidArrayException {
         bubbleSort();
 
         int mid = low + (high - low) / 2;
 
         if (mid > high)
             return -1;
-
 
         if (element < array[mid]){
             return rank(element, low, mid - 1);
@@ -111,13 +130,6 @@ public class Array implements ArraySortOption {
         }else {
             return mid;
         }
-    }
-
-    public int binarySearch(int element) throws InvalidArrayException {
-        if (array == null || array.length == 0)
-            throw new InvalidArrayException("Array has an invalid length.");
-
-        return rank(element, 0, array.length - 1);
     }
 
     @Override

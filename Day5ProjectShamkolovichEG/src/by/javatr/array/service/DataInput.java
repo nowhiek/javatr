@@ -1,7 +1,5 @@
 package by.javatr.array.service;
 
-import by.javatr.array.entity.Array;
-
 import java.io.*;
 import java.util.Scanner;
 
@@ -17,7 +15,7 @@ public final class DataInput {
         return scanner.nextInt();
     }
 
-    public static Array inputNumbersFromFile(String path){
+    public static int[] inputNumbersFromFile(String path){
         String line = getLineFromFile(path);
 
         return StringOperation.getArrayFromLine(line);
