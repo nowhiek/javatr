@@ -1,23 +1,25 @@
 package by.javatr.array.generator;
 
 import by.javatr.array.entity.Array;
-import by.javatr.array.service.InvalidRangeException;
 
 public class ArrayGenerator {
 
-    public static void generateNumbersInArray(Array array, int min, int max) throws InvalidRangeException {
-        int[] result = new int[array.getArray().length];
+    public Array generateIntegerNumbersInArray(int size, int min, int max) {
+        Integer[] result = new Integer[size];
 
-        for (int i = 0; i < array.getArray().length; i++){
+        for (int i = 0; i < result.length; i++){
             result[i] = randomValueInRange(min, max);
         }
 
-        array.setArray(result);
+        return new Array(result);
     }
 
-    private static int randomValueInRange(int min, int max) throws InvalidRangeException {
-        if (min >= max)
-            throw new InvalidRangeException("Invalid values entered in the method.");
+    private int randomValueInRange(int min, int max) {
+        if (min >= max){
+            int tmp = max;
+            max = min;
+            min = tmp;
+        }
 
         max -= min;
 

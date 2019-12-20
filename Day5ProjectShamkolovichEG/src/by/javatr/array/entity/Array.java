@@ -1,16 +1,54 @@
 package by.javatr.array.entity;
 
-import by.javatr.array.service.InvalidArrayException;
-import by.javatr.array.service.ArraySortOption;
+import by.javatr.array.entity.exception.InvalidArrayException;
 import by.javatr.array.service.NumberOperation;
+import by.javatr.array.service.SearchService;
+import by.javatr.array.service.SortService;
 import by.javatr.array.service.StringOperation;
+import by.javatr.array.service.validator.ArrayLengthValidator;
 
-public class Array implements ArraySortOption {
+public final class Array <T extends Number & Comparable> implements SortService, SearchService {
+    // #TODO class NumberOperation is compared only as an integer and it was not possible to implement the class so that it does not depend on the task
+    private T[] array ;
+    private int length;
 
-    private int[] array;
+    public Array(){ }
 
-    public int[] getArray() {
-        int[] clone = new int[array.length];
+    public Array(Byte[] array) {
+        this.array = (T[])array;
+        this.length = array.length;
+    }
+
+    public Array(Short[] array) {
+        this.array = (T[]) array;
+        this.length = array.length;
+    }
+
+    public Array(Integer[] array) {
+        this.array = (T[]) array;
+        this.length = array.length;
+    }
+
+    public Array(Long[] array) {
+        this.array = (T[]) array;
+        this.length = array.length;
+    }
+
+    public Array(T[] array) {
+        this.array = array;
+        this.length = array.length;
+    }
+
+    public Array(Array array) {
+        this.array = (T[]) array.getArray();
+        this.length = array.length;
+    }
+
+    public T[] getArray() {
+        if (!new ArrayLengthValidator().validate(array))
+            return (T[])new Number[0];
+
+        T[] clone = (T[]) new Number[array.length];
 
         for (int i = 0; i < clone.length; i++){
             clone[i] = array[i];
@@ -19,28 +57,22 @@ public class Array implements ArraySortOption {
         return clone;
     }
 
-    public void setArray(int[] array) {
+    public void setArray(T[] array) {
         this.array = array;
     }
 
-    public Array(){ }
-
-    public Array(int[] array) {
-        this.array = array;
+    public int getArrayLength(){
+        return length;
     }
 
-    public Array(Array array){
-        this.array = array.getArray();
-    }
-
-    public int getMaximumValue() throws InvalidArrayException {
-        if (array == null || array.length == 0)
+    public T getMaximumValue() throws InvalidArrayException{
+        if (!new ArrayLengthValidator().validate(array))
             throw new InvalidArrayException("Array has an invalid length.");
 
-        int max = array[0];
+        T max = array[0];
 
         for (int i = 0; i < array.length; i++) {
-            if (max < array[i]) {
+            if (max.compareTo(array[i]) == -1) {
                 max = array[i];
             }
         }
@@ -48,14 +80,14 @@ public class Array implements ArraySortOption {
         return max;
     }
 
-    public int getMinimalValue() throws InvalidArrayException {
-        if (array == null || array.length == 0)
+    public T getMinimalValue() throws InvalidArrayException {
+        if (!new ArrayLengthValidator().validate(array))
             throw new InvalidArrayException("Array has an invalid length.");
 
-        int min = array[0];
+        T min = array[0];
 
         for (int i = 0; i < array.length; i++) {
-            if (min > array[i]) {
+            if (min.compareTo(array[i]) == 1) {
                 min = array[i];
             }
         }
@@ -63,69 +95,117 @@ public class Array implements ArraySortOption {
         return min;
     }
 
-    public Array getOnlyPrimeNumbersInArray() throws InvalidArrayException {
-        if (array == null || array.length == 0)
-            throw new InvalidArrayException("Array has an invalid length.");
+    private int getCountOnlyPrimeNumbersInArray(){
+        int result = 0;
 
-        int count = 0;
-        int[] tmp = new int[array.length];
+        NumberOperation operation = new NumberOperation();
 
         for (int i = 0; i < array.length; i++){
-            if (NumberOperation.isPrimeNumber(array[i]))
+            if (operation.isPrimeNumber((int)array[i])){ // #TODO
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+    public Array getOnlyPrimeNumbersInArray() throws InvalidArrayException {
+        if (!new ArrayLengthValidator().validate(array))
+            throw new InvalidArrayException("Array has an invalid length.");
+
+        NumberOperation operation = new NumberOperation();
+
+        int count = 0;
+        Number[] tmp = new Number[getCountOnlyPrimeNumbersInArray()];
+
+        for (int i = 0; i < array.length; i++){
+            if (operation.isPrimeNumber((int)array[i])) { // #TODO
                 tmp[count++] = array[i];
+            }
         }
 
         return new Array(tmp);
+    }
+
+    private int getCountOnlyFibonachiNumbersInArray(){
+        int result = 0;
+
+        NumberOperation operation = new NumberOperation();
+
+        for (int i = 0; i < array.length; i++){
+            if (operation.isFibonachiNumber((int)array[i])){ // #TODO
+                result++;
+            }
+        }
+
+        return result;
     }
 
     public Array getOnlyFibonachiNumbersInArray() throws InvalidArrayException {
-        if (array == null || array.length == 0)
+        if (!new ArrayLengthValidator().validate(array))
             throw new InvalidArrayException("Array has an invalid length.");
 
-        int count = 0;
-        int[] tmp = new int[array.length];
+        NumberOperation operation = new NumberOperation();
+
+        int count= 0;
+        Number[] tmp = new Number[getCountOnlyFibonachiNumbersInArray()];
 
         for (int i = 0; i < array.length; i++){
-            if (NumberOperation.isFibonachiNumber(array[i]))
+            if (operation.isFibonachiNumber((int)array[i])) // #TODO
                 tmp[count++] = array[i];
         }
 
         return new Array(tmp);
+    }
+
+    private int getCountOnlyThreeNotSameDigitsInArray(){
+        int result = 0;
+
+        StringOperation operation = new StringOperation();
+
+        for (int i = 0; i < array.length; i++){
+            if (operation.isThreeNotSameDigits(String.valueOf(Math.abs((int)array[i])))){ // #TODO
+                result++;
+            }
+        }
+
+        return result;
     }
 
     public Array getOnlyThreeNotSameDigitsInArray() throws InvalidArrayException {
-        if (array == null || array.length == 0)
+        if (!new ArrayLengthValidator().validate(array))
             throw new InvalidArrayException("Array has an invalid length.");
 
+        StringOperation operation = new StringOperation();
+
         int count = 0;
-        int[] tmp = new int[array.length];
+        Number[] tmp = new Number[getCountOnlyThreeNotSameDigitsInArray()];
 
         for (int i = 0; i < array.length; i++){
-            if (StringOperation.isThreeNotSameDigits(String.valueOf(Math.abs(array[i]))))
+            if (operation.isThreeNotSameDigits(String.valueOf(Math.abs((int)array[i])))) // #TODO
                 tmp[count++] = array[i];
         }
 
         return new Array(tmp);
     }
 
-    public int binarySearch(int element) throws InvalidArrayException {
-        if (array == null || array.length == 0)
+    @Override
+    public int binarySearch(Number element) throws InvalidArrayException {
+        if (!new ArrayLengthValidator().validate(array))
             throw new InvalidArrayException("Array has an invalid length.");
 
-        return rank(element, 0, array.length - 1);
+        return rank((T)element, 0, array.length - 1);
     }
 
-    private int rank(int element, int low, int high) throws InvalidArrayException {
-        bubbleSort();
-
+    private int rank(T element, int low, int high) {
         int mid = low + (high - low) / 2;
 
         if (mid > high)
             return -1;
 
-        if (element < array[mid]){
+        if (element.compareTo(array[mid]) == -1){
             return rank(element, low, mid - 1);
-        }else if (element > array[mid]){
+        }else if (element.compareTo(array[mid]) == 1){
             return rank(element, mid + 1, high);
         }else {
             return mid;
@@ -134,14 +214,14 @@ public class Array implements ArraySortOption {
 
     @Override
     public void bubbleSort() throws InvalidArrayException {
-        if (array == null || array.length == 0)
+        if (!new ArrayLengthValidator().validate(array))
             throw new InvalidArrayException("Array has an invalid length.");
 
-        int tmp;
+        T tmp;
 
         for (int i = 0; i < array.length; i++){
             for (int j = 1; j < array.length - i; j++){
-                if (array[j - 1] > array[j]){
+                if (array[j - 1].compareTo(array[j]) == 1){
                     tmp = array[j - 1];
                     array[j - 1] = array[j];
                     array[j] = tmp;
@@ -150,48 +230,140 @@ public class Array implements ArraySortOption {
         }
     }
 
-    @Override
-    public void selectionSort() throws InvalidArrayException {
-        if (array == null || array.length == 0)
-            throw new InvalidArrayException("Array has an invalid length.");
+    private void heapify(T[] arr, int n, int i) {
+        int high = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
 
-        for (int i = 0; i < array.length; i++){
-            int pos = i;
-            int step = array[i];
+        if (left < n && arr[left].compareTo(arr[high]) == 1)
+            high = left;
 
-            for (int j = 1 + i; j < array.length; j++){
-                if (step > array[j]){
-                    pos = j;
-                    step = array[j];
-                }
-            }
+        if (right < n && arr[right].compareTo(arr[high]) == 1)
+            high = right;
 
-            array[pos] = array[i];
-            array[i] = step;
+        if (high != i)
+        {
+            T swap = arr[i];
+            arr[i] = arr[high];
+            arr[high] = swap;
+
+            heapify(arr, n, high);
         }
     }
 
     @Override
-    public void insertSort() throws InvalidArrayException {
-        if (array == null || array.length == 0)
+    public void heapSort() throws InvalidArrayException {
+        if (!new ArrayLengthValidator().validate(array))
             throw new InvalidArrayException("Array has an invalid length.");
 
-        int i;
-        int j;
-        int tmp;
+        int length = array.length;
 
-        for (i = 1; i < array.length; i++)
+        for (int i = length / 2 - 1; i >= 0; i--)
+            heapify(array, length, i);
+
+        for (int i = length - 1; i >= 0; i--)
         {
-            tmp = array[i];
-            j = i;
+            T temp = array[0];
+            array[0] = array[i];
+            array[i] = temp;
 
-            while (j > 0 && array[j - 1] > tmp)
-            {
-                array[j] = array[j - 1];
+            heapify(array, i, 0);
+        }
+    }
+
+    @Override
+    public void quickSort(int low, int high) throws InvalidArrayException {
+        if (!new ArrayLengthValidator().validate(array))
+            throw new InvalidArrayException("Array has an invalid length.");
+
+        int middle = low + (high - low) / 2;
+        T element = array[middle];
+
+        int i = low, j = high;
+        while (i <= j) {
+            while (array[i].compareTo(element) == -1) {
+                i++;
+            }
+
+            while (array[j].compareTo(element) == 1) {
                 j--;
             }
 
-            array[j] = tmp;
+            if (i <= j) {
+                T tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
+                i++;
+                j--;
+            }
+        }
+
+        if (low < j)
+            quickSort(low, j);
+
+        if (high > i)
+            quickSort(i, high);
+    }
+
+    private void merge(T[] arr, int left, int mid, int right) {
+        int lengthFirstSubArray = mid - left + 1;
+        int lengthSecondSubArray = right - mid;
+
+        T[] L = (T[])new Number[lengthFirstSubArray];
+        T[] R = (T[])new Number[lengthSecondSubArray];
+
+        for (int i = 0; i < lengthFirstSubArray; ++i)
+            L[i] = arr[left + i];
+
+        for (int j = 0; j < lengthSecondSubArray; ++j)
+            R[j] = arr[mid + 1 + j];
+
+        int i = 0, j = 0;
+
+        int k = left;
+        while (i < lengthFirstSubArray && j < lengthSecondSubArray)
+        {
+            if (L[i].compareTo(R[j]) == -1 || L[i].compareTo(R[j]) == 0)
+            {
+                arr[k] = L[i];
+                i++;
+            }
+            else
+            {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i < lengthFirstSubArray)
+        {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+
+        while (j < lengthSecondSubArray)
+        {
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+    }
+
+    @Override
+    public void mergeSort(int low, int high) throws InvalidArrayException {
+        if (!new ArrayLengthValidator().validate(array))
+            throw new InvalidArrayException("Array has an invalid length.");
+
+        if (low < high)
+        {
+            int mid = (low + high) / 2;
+
+            mergeSort(low, mid);
+            mergeSort(mid + 1, high);
+
+            merge(array, low, mid, high);
         }
     }
 
@@ -200,9 +372,9 @@ public class Array implements ArraySortOption {
         int prime = 31;
         int result = 1;
 
-        if (array != null) {
+        if (new ArrayLengthValidator().validate(array)) {
             for (int i = 0; i < array.length; i++) {
-                result = result * prime + Integer.hashCode(array[i]);
+                result = result * prime + Integer.hashCode(array[i].hashCode());
             }
         }
 
@@ -227,7 +399,7 @@ public class Array implements ArraySortOption {
             return false;
         }else {
             for(int i = 0; i < array.length; i++){
-                if (array[i] != tmp.array[i]){
+                if (!array[i].equals(tmp.array[i])){
                     return false;
                 }
             }
@@ -240,7 +412,7 @@ public class Array implements ArraySortOption {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        if (array != null && array.length != 0) {
+        if (new ArrayLengthValidator().validate(array)) {
             sb.append("[" + getClass().getName() + " - ");
 
             for (int i = 0; i < array.length; i++) {

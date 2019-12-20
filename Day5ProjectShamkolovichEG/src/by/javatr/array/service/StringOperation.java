@@ -2,7 +2,7 @@ package by.javatr.array.service;
 
 public class StringOperation {
 
-    public static int[] getArrayFromLine(String line){
+    public int[] getIntArrayFromLine(String line){
         String[] splitLine = line.split(RegexString.WHITESPACE);
 
         int[] intArray = new int[splitLine.length];
@@ -14,7 +14,7 @@ public class StringOperation {
         return intArray;
     }
 
-    public static boolean isThreeNotSameDigits(String str){
+    public boolean isThreeNotSameDigits(String str){
         if (str.length() != 3)
             return false;
 

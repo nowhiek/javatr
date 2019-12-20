@@ -1,4 +1,4 @@
-package by.javatr.array.service;
+package by.javatr.array.entity.exception;
 
 public class InvalidArrayException extends Exception {
     public InvalidArrayException() {

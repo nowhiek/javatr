@@ -2,13 +2,14 @@ package by.javatr.array.service;
 
 public class NumberOperation {
 
-    public static boolean isPrimeNumber(int number){
+    public boolean isPrimeNumber(int number){
         if (number < 2)
             return false;
 
         double tmp = Math.sqrt(number);
 
         for (int i = 2; i <= tmp; i++){
+
             if (number % i == 0){
                 return false;
             }
@@ -17,7 +18,7 @@ public class NumberOperation {
         return true;
     }
 
-    public static boolean isFibonachiNumber(int number){
+    public boolean isFibonachiNumber(int number){
         if (number < 0)
             return false;
 
