@@ -2,7 +2,7 @@ package by.javatr.library.service.validator.impl;
 
 import by.javatr.library.service.validator.LibraryValidator;
 
-public class BookNameValidator implements LibraryValidator<String> {
+public class NameValidator implements LibraryValidator<String> {
 
     @Override
     public boolean validate(String field) {

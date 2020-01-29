@@ -14,7 +14,15 @@ final class CommandProvider {
         repository.put(CommandEnum.ADD_BOOK, new AddBook());
         repository.put(CommandEnum.REMOVE_BOOK, new RemoveBook());
         repository.put(CommandEnum.GET_BOOK, new GetBook());
-        repository.put(CommandEnum.REGISTER, new Register());
+        repository.put(CommandEnum.UPDATE_BOOK, new UpdateBook());
+        repository.put(CommandEnum.GET_ALL_BOOKS, new GetAllBooks());
+        repository.put(CommandEnum.SORT_BOOKS, new SortBooks());
+        repository.put(CommandEnum.ADD_USER, new AddUser());
+        repository.put(CommandEnum.REMOVE_USER, new RemoveUser());
+        repository.put(CommandEnum.UPDATE_USER, new UpdateUser());
+        repository.put(CommandEnum.GET_USER, new GetUser());
+        repository.put(CommandEnum.GET_ALL_USERS, new GetAllUsers());
+        repository.put(CommandEnum.SORT_USERS, new SortUsers());
         repository.put(CommandEnum.SIGN_IN, new SignIn());
         repository.put(CommandEnum.WRONG_METHOD, new WrongMethod());
     }

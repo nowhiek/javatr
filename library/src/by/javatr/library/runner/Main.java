@@ -2,15 +2,11 @@ package by.javatr.library.runner;
 
 import by.javatr.library.controller.Controller;
 import by.javatr.library.entity.*;
-import by.javatr.library.service.impl.BookServiceImpl;
-import by.javatr.library.service.impl.UserServiceImpl;
-
-import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        User user = new User(1, "Da", "DA", Role.USER);
+        User user = new User(1, "Daa", "DA", Role.USER);
         Author author1 = new Author("Oleg", "Mashikov");
         Author author2 = new Author("Maria", "Slaboda");
         Author author3 = new Author("Nikita", "Jigurda");
@@ -27,20 +23,9 @@ public class Main {
         Book book4 = new Book(4, "Ztext", publishing1, 90);
         Book book5 = new Book(5, "WTeSt", authors1, publishing1, 200);
 
-        UserServiceImpl dao = new UserServiceImpl();
-        BookServiceImpl dao1 = new BookServiceImpl();
-
-        List<Book> all = dao1.getAll();
-
-        List<Book> booksByAuthor = dao1.findBooksByCountPages(222);
-
-        for (int i = 0; i < booksByAuthor.size(); i++){
-            System.out.println(booksByAuthor.get(i));
-        }
-
-        //System.out.println(entityById);
-
         Controller controller = new Controller();
+
+        System.out.println(controller.executeTask("ADD_BOOK?021&TESTTEST&&&231"));
 
     }
 }

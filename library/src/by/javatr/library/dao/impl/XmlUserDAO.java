@@ -138,7 +138,7 @@ public class XmlUserDAO implements LibraryDAO <User, Integer> {
             Element rootElement = document.getDocumentElement();
 
             Element user = document.createElement("user");
-            user.setAttribute("id", "1");
+            user.setAttribute("id", String.valueOf(entity.getIdUser()));
             rootElement.appendChild(user);
 
             Element name = document.createElement("user_name");

@@ -4,12 +4,13 @@ import by.javatr.library.controller.command.Command;
 
 public final class Controller {
     private final CommandProvider provider = new CommandProvider();
+    private final char commandDelimiter = '?';
 
     public String executeTask(String request){
-        Command currentCommand = provider.getCommand(request);
+        String commandName = request.substring(0, request.indexOf(commandDelimiter));
+        Command executionCommand = provider.getCommand(commandName);
 
-        String response = currentCommand.execute(request);
-
-        return response;
+        System.out.println(commandName);
+        return executionCommand.execute(request);
     }
 }

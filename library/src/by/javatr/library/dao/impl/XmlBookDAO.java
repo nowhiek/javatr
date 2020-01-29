@@ -183,7 +183,7 @@ public class XmlBookDAO implements LibraryDAO <Book, Integer> {
             Element rootElement = document.getDocumentElement();
 
             Element book = document.createElement("book");
-            book.setAttribute("id", "1");
+            book.setAttribute("id", String.valueOf(entity.getIdBook()));
             rootElement.appendChild(book);
 
             Element name = document.createElement("book_name");

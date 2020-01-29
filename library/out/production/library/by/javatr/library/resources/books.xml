@@ -66,9 +66,21 @@
             </author>
         </authors>
         <publishing id="2">
-            <publishing_name>ekb</publishing_name>
+            <publishing_name>Eekb</publishing_name>
             <publishing_country>Russia</publishing_country>
         </publishing>
         <count_pages>124</count_pages>
     </book>
-</library>
+<book id="101">
+    <book_name>Jerenovski</book_name>
+    <authors>
+        <author>
+            <author_first_name>Maria</author_first_name><author_second_name>Slaboda</author_second_name>
+        </author>
+        <author><author_first_name>Eugenu</author_first_name><author_second_name>Shamkolovich</author_second_name>
+        </author>
+        <author><author_first_name>Oleg</author_first_name><author_second_name>Taktarov</author_second_name></author>
+    </authors>
+    <count_pages>1245</count_pages>
+</book>
+<book id="1"><book_name>TESTTEST</book_name><authors><author><author_first_name>Jenya</author_first_name><author_second_name>Super</author_second_name></author><author><author_first_name>Masha</author_first_name><author_second_name>Bomba</author_second_name></author></authors><count_pages>231</count_pages></book><book id="21"><book_name>TESTTEST</book_name><authors><author><author_first_name>Jenya</author_first_name><author_second_name>Super</author_second_name></author><author><author_first_name>Masha</author_first_name><author_second_name>Bomba</author_second_name></author></authors><count_pages>231</count_pages></book></library>

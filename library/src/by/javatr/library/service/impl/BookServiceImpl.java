@@ -15,7 +15,7 @@ public class BookServiceImpl implements LibraryService <Book>{
 
     @Override
     public List<Book> getAll() {
-        DAOFactory dao = DAOFactory.getDAOFactory(1);
+        DAOFactory dao = DAOFactory.getDAOFactory("XML");
         List<Book> all = dao.getBookDAO().getAll();
 
         return all;
@@ -26,7 +26,7 @@ public class BookServiceImpl implements LibraryService <Book>{
         if (!new BookValidator().validate(entity))
             System.out.println("Exception");
 
-        DAOFactory dao = DAOFactory.getDAOFactory(1);
+        DAOFactory dao = DAOFactory.getDAOFactory("XML");
 
         return dao.getBookDAO().create(entity);
     }
@@ -38,17 +38,20 @@ public class BookServiceImpl implements LibraryService <Book>{
 
     @Override
     public Book findEntityById(int id) {
-        DAOFactory dao = DAOFactory.getDAOFactory(1);
+        if (!new IdentifierValidator().validate(id))
+            System.out.println("Exception!");
 
-        return (Book) dao.getBookDAO().getEntityById(id);
+        DAOFactory dao = DAOFactory.getDAOFactory("XML");
+
+        return dao.getBookDAO().getEntityById(id);
     }
 
     @Override
     public Book findEntityByName(String bookName) {
-        if (!new BookNameValidator().validate(bookName))
+        if (!new NameValidator().validate(bookName))
             System.out.println("Exception null or empty.");
 
-        DAOFactory dao = DAOFactory.getDAOFactory(1);
+        DAOFactory dao = DAOFactory.getDAOFactory("XML");
         List<Book> books = dao.getBookDAO().getAll();
 
         for (Book book : books) {
@@ -60,11 +63,21 @@ public class BookServiceImpl implements LibraryService <Book>{
         return new Book();
     }
 
+    @Override
+    public List<Book> sortEntitiesByComparator(Comparator comparator) {
+        DAOFactory dao = DAOFactory.getDAOFactory("XML");
+        List<Book> books = dao.getBookDAO().getAll();
+
+        books.sort(comparator);
+
+        return books;
+    }
+
     public List<Book> findBooksByAuthor(Author author) {
-        if (!new AuthorNameValidator().validate(author))
+        if (!new BookAuthorNameValidator().validate(author))
             System.out.println("Exception null or empty");
 
-        DAOFactory dao = DAOFactory.getDAOFactory(1);
+        DAOFactory dao = DAOFactory.getDAOFactory("XML");
         List<Book> books = dao.getBookDAO().getAll();
         List<Book> result = new ArrayList<>();
 
@@ -82,10 +95,10 @@ public class BookServiceImpl implements LibraryService <Book>{
     }
 
     public List<Book> findBooksByPublishing(Publishing publishing) {
-        if (!new PublishingNameValidator().validate(publishing))
+        if (!new BookPublishingValidator().validate(publishing))
             System.out.println("Exception null or empty");
 
-        DAOFactory dao = DAOFactory.getDAOFactory(1);
+        DAOFactory dao = DAOFactory.getDAOFactory("XML");
         List<Book> books = dao.getBookDAO().getAll();
         List<Book> result = new ArrayList<>();
 
@@ -101,29 +114,19 @@ public class BookServiceImpl implements LibraryService <Book>{
     }
 
     public List<Book> findBooksByCountPages(int count) {
-        if (!new CountPagesValidator().validate(count))
+        if (!new BookCountPagesValidator().validate(count))
             System.out.println("Exception not correct argument");
 
-        DAOFactory dao = DAOFactory.getDAOFactory(1);
+        DAOFactory dao = DAOFactory.getDAOFactory("XML");
         List<Book> books = dao.getBookDAO().getAll();
         List<Book> result = new ArrayList<>();
 
         for (Book book : books) {
             if (book.getCountPagesBook() == count) {
-               result.add(book);
+                result.add(book);
             }
         }
 
         return result;
-    }
-
-    @Override
-    public List<Book> sortEntitiesByComparator(Comparator comparator) {
-        DAOFactory dao = DAOFactory.getDAOFactory(1);
-        List<Book> books = dao.getBookDAO().getAll();
-
-        books.sort(comparator);
-
-        return books;
     }
 }
