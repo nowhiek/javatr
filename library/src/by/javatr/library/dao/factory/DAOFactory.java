@@ -1,22 +1,26 @@
 package by.javatr.library.dao.factory;
 
-import by.javatr.library.dao.factory.impl.XmlDAOFactory;
-import by.javatr.library.dao.impl.XmlBookDAO;
-import by.javatr.library.dao.impl.XmlUserDAO;
+import by.javatr.library.dao.impl.BookDAO;
+import by.javatr.library.dao.impl.UserDAO;
 
-public abstract class DAOFactory {
+public final class DAOFactory {
 
-    private static final String XML = "XML";
+    private static final DAOFactory instance = new DAOFactory();
 
-    public abstract XmlBookDAO getBookDAO();
-    public abstract XmlUserDAO getUserDAO();
+    private final BookDAO bookDAOImpl = new BookDAO();
+    private final UserDAO userDAOImpl = new UserDAO();
 
-    public static DAOFactory getDAOFactory(String temp){
-        switch (temp){
-            case XML :
-                return new XmlDAOFactory();
-            default :
-                return null;
-        }
+    private DAOFactory(){ }
+
+    public static DAOFactory getInstance(){
+        return instance;
+    }
+
+    public BookDAO getBookDAO(){
+        return bookDAOImpl;
+    }
+
+    public UserDAO getUserDAO(){
+        return userDAOImpl;
     }
 }

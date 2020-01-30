@@ -1,31 +1,85 @@
 package by.javatr.library.runner;
 
 import by.javatr.library.controller.Controller;
-import by.javatr.library.entity.*;
+import by.javatr.library.exception.dao.DAOException;
+import by.javatr.library.scanner.DataInput;
 
 public class Main {
 
-    public static void main(String[] args) {
-        User user = new User(1, "Daa", "DA", Role.USER);
-        Author author1 = new Author("Oleg", "Mashikov");
-        Author author2 = new Author("Maria", "Slaboda");
-        Author author3 = new Author("Nikita", "Jigurda");
-
-        Author[] authors1 = new Author[] {author1, author2};
-        Author[] authors2 = new Author[] {author1};
-        Author[] authors3 = new Author[] {author2, author3, author1};
-
-        Publishing publishing1 = new Publishing(1, "ekb", "Russia");
-
-        Book book1 = new Book(1, "Test", 123);
-        Book book2 = new Book(2, "Atest", authors2, publishing1, 124);
-        Book book3 = new Book(3, "BTest", authors3, 90);
-        Book book4 = new Book(4, "Ztext", publishing1, 90);
-        Book book5 = new Book(5, "WTeSt", authors1, publishing1, 200);
-
+    public static void main(String[] args) throws DAOException {
         Controller controller = new Controller();
+        DataInput input = new DataInput();
 
-        System.out.println(controller.executeTask("ADD_BOOK?021&TESTTEST&&&231"));
+        boolean flag = false;
 
+        while (true){
+            if (!flag){
+                System.out.print("Input login : ");
+                String login = input.inputStringFromConsole();
+
+                System.out.print("Input password : ");
+                String pass = input.inputStringFromConsole();
+
+                String result = controller.executeTask("SIGN_IN?".concat(login + "&").concat(pass));
+
+                if (result.equals("Success")){
+                    flag = true;
+                    pressAnyKeyToContinue();
+                }
+            } else {
+                System.out.println("1) User options.\n"
+                        + "2) Book options.");
+
+                int operation = input.inputIntFromConsole();
+                int inOperation = 0;
+
+                switch (operation){
+                    case 1 : {
+                        System.out.println("1) Get all books.\n"
+                                + "2) Get book by :\n"
+                                + "3) Sort books by :\n"
+                                + "4) Update book :\n"
+                                + "5) Remove book :");
+
+                        inOperation = input.inputIntFromConsole();
+
+                        switch (inOperation){
+                            case 1 : {
+                                String result = controller.executeTask("GET_ALL_BOOKS?");
+
+                                System.out.println(result);
+                            } default : {
+
+                            }
+                        }
+
+                        pressAnyKeyToContinue();
+                    } case 2 : {
+
+                    } default : {
+
+                    }
+                }
+            }
+        }
+        //System.out.println(controller.executeTask("UPDATE_USER?1&Test&1234&User&1&TestTest&1234567&Admin"));
+
+        //System.out.println(controller.executeTask("GET_ALL_USERS?"));
+
+    }
+
+    private static int mainMenu(){
+        return 0;
+    }
+
+    private static void pressAnyKeyToContinue()
+    {
+        System.out.println("Press Enter key to continue...");
+        try {
+            System.in.read();
+        }
+        catch(Exception e){
+
+        }
     }
 }

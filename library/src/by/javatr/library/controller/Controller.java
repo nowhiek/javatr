@@ -10,7 +10,6 @@ public final class Controller {
         String commandName = request.substring(0, request.indexOf(commandDelimiter));
         Command executionCommand = provider.getCommand(commandName);
 
-        System.out.println(commandName);
         return executionCommand.execute(request);
     }
 }

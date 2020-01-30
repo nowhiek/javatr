@@ -3,6 +3,8 @@ package by.javatr.library.controller;
 import by.javatr.library.controller.command.Command;
 import by.javatr.library.controller.command.CommandEnum;
 import by.javatr.library.controller.command.impl.*;
+import by.javatr.library.controller.command.impl.book.*;
+import by.javatr.library.controller.command.impl.user.*;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package by.javatr.library.service.comparator.impl;
 
-import by.javatr.library.entity.User;
+import by.javatr.library.bean.User;
 import by.javatr.library.service.comparator.LibraryComparator;
 
 public class SortUsersById implements LibraryComparator <User> {

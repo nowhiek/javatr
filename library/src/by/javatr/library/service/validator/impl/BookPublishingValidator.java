@@ -1,6 +1,6 @@
 package by.javatr.library.service.validator.impl;
 
-import by.javatr.library.entity.Publishing;
+import by.javatr.library.bean.Publishing;
 import by.javatr.library.service.validator.LibraryValidator;
 
 public class BookPublishingValidator implements LibraryValidator <Publishing> {
@@ -10,6 +10,8 @@ public class BookPublishingValidator implements LibraryValidator <Publishing> {
         if (publishing == null)
             return true;
 
-        return (publishing.getNamePublishing() != null && !publishing.getNamePublishing().isEmpty());
+        return (publishing.getIdPublishing() > 0)
+                && (publishing.getNamePublishing() != null && !publishing.getNamePublishing().isEmpty())
+                && (publishing.getCountryPublishing() != null && !publishing.getNamePublishing().isEmpty());
     }
 }

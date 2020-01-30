@@ -1,9 +1,12 @@
 package by.javatr.library.service.impl;
 
+import by.javatr.library.bean.Author;
+import by.javatr.library.bean.Book;
+import by.javatr.library.bean.Publishing;
 import by.javatr.library.dao.factory.DAOFactory;
-import by.javatr.library.entity.Author;
-import by.javatr.library.entity.Book;
-import by.javatr.library.entity.Publishing;
+import by.javatr.library.dao.impl.BookDAO;
+import by.javatr.library.exception.dao.DAOException;
+import by.javatr.library.exception.service.*;
 import by.javatr.library.service.LibraryService;
 import by.javatr.library.service.validator.impl.*;
 
@@ -13,119 +16,203 @@ import java.util.List;
 
 public class BookServiceImpl implements LibraryService <Book>{
 
+    private DAOFactory daoFactory = DAOFactory.getInstance();
+    private BookDAO bookDAO = daoFactory.getBookDAO();
+
     @Override
-    public List<Book> getAll() {
-        DAOFactory dao = DAOFactory.getDAOFactory("XML");
-        List<Book> all = dao.getBookDAO().getAll();
+    public List<Book> getAll() throws ServiceException {
+        List<Book> all = null;
+
+        try {
+            all = bookDAO.getAll();
+        } catch (DAOException e) {
+            throw new ServiceGetAllBooksException(e);
+        }
+
+        if (all.isEmpty())
+            throw new ServiceEmptyDataException("No books.");
 
         return all;
     }
 
     @Override
-    public boolean create(Book entity) {
+    public boolean create(Book entity) throws ServiceException {
         if (!new BookValidator().validate(entity))
-            System.out.println("Exception");
+            throw new ServiceBookNotCorrectException("Book was not correct.");
 
-        DAOFactory dao = DAOFactory.getDAOFactory("XML");
-
-        return dao.getBookDAO().create(entity);
+        try {
+            return bookDAO.create(entity);
+        } catch (DAOException e) {
+            throw new ServiceCreateBookException("The book was not created.");
+        }
     }
 
     @Override
-    public boolean remove(Book entity) {
-        return false;
-    }
-
-    @Override
-    public Book findEntityById(int id) {
+    public boolean remove(int id) throws ServiceException {
         if (!new IdentifierValidator().validate(id))
-            System.out.println("Exception!");
+            throw new ServiceIdentifierNotCorrectException("You entered not valid id.");
 
-        DAOFactory dao = DAOFactory.getDAOFactory("XML");
-
-        return dao.getBookDAO().getEntityById(id);
+        try {
+            return (findEntityById(id) != null && bookDAO.remove(id));
+        } catch (DAOException e) {
+            throw new ServiceRemoveUserException("The book was not deleted.", e);
+        }
     }
 
     @Override
-    public Book findEntityByName(String bookName) {
-        if (!new NameValidator().validate(bookName))
-            System.out.println("Exception null or empty.");
+    public boolean update(Book oldEntity, Book newEntity) throws ServiceException {
+        if (!new BookValidator().validate(newEntity))
+            throw new ServiceBookNotCorrectException("Book was not correct.");
 
-        DAOFactory dao = DAOFactory.getDAOFactory("XML");
-        List<Book> books = dao.getBookDAO().getAll();
+        try {
+            return (findEntityById((int) oldEntity.getIdBook()) != null && bookDAO.update(oldEntity, newEntity));
+        } catch (DAOException e) {
+            throw new ServiceUpdateBookException("The book was not updated.", e);
+        }
+    }
 
-        for (Book book : books) {
-            if (book.getNameBook().equals(bookName)) {
-                return book;
-            }
+    @Override
+    public Book findEntityById(int id) throws ServiceException {
+        if (!new IdentifierValidator().validate(id))
+            throw new ServiceIdentifierNotCorrectException("You entered not valid id.");
+
+        Book book = null;
+
+        try {
+            book = bookDAO.getEntityById(id);
+        } catch (DAOException e) {
+            throw new ServiceGetAllBooksException("Book was not received.", e);
         }
 
-        return new Book();
+        if (book == null)
+            throw new ServiceBookNotFoundException("This book not founded.");
+
+        return book;
     }
 
     @Override
-    public List<Book> sortEntitiesByComparator(Comparator comparator) {
-        DAOFactory dao = DAOFactory.getDAOFactory("XML");
-        List<Book> books = dao.getBookDAO().getAll();
+    public Book findEntityByName(String bookName) throws ServiceException {
+        if (!new NameValidator().validate(bookName))
+            throw new ServiceNameNotCorrectException("You entered not valid name.");
 
-        books.sort(comparator);
+        List<Book> books = null;
+        Book book = null;
+
+        try {
+            books = bookDAO.getAll();
+
+            for (Book tmp : books) {
+                if (tmp.getNameBook().equalsIgnoreCase(bookName)) {
+                    book = tmp;
+
+                    break;
+                }
+            }
+        } catch (DAOException e) {
+            throw new ServiceGetAllBooksException("Book was not received.", e);
+        }
+
+        if (book == null)
+            throw new ServiceBookNotFoundException("This book not founded.");
+
+        return book;
+    }
+
+    @Override
+    public List<Book> sortEntitiesByComparator(Comparator comparator) throws ServiceException {
+        List<Book> books = null;
+
+        try {
+            books = bookDAO.getAll();
+
+            books.sort(comparator);
+        } catch (DAOException e) {
+            throw new ServiceGetAllBooksException("Users were not received.", e);
+        }
 
         return books;
     }
 
-    public List<Book> findBooksByAuthor(Author author) {
-        if (!new BookAuthorNameValidator().validate(author))
-            System.out.println("Exception null or empty");
+    public List<Book> findBooksByAuthor(Author author) throws ServiceException {
+        if (!new BookAuthorValidator().validate(author))
+            throw new ServiceNameNotCorrectException("You entered not valid author name.");
 
-        DAOFactory dao = DAOFactory.getDAOFactory("XML");
-        List<Book> books = dao.getBookDAO().getAll();
-        List<Book> result = new ArrayList<>();
+        List<Book> books = null;
+        List<Book> result = null;
 
-        for (Book book : books) {
-            if (book.getAuthorsBook().length != 0) {
-                for (int i = 0; i < book.getAuthorsBook().length; i++) {
-                    if (book.getAuthorsBook()[i].equals(author)) {
+        try {
+            books = bookDAO.getAll();
+            result = new ArrayList<>();
+
+            for (Book book : books) {
+                if (book.getAuthorsBook().length != 0) {
+                    for (int i = 0; i < book.getAuthorsBook().length; i++) {
+                        if (book.getAuthorsBook()[i].equals(author)) {
+                            result.add(book);
+                        }
+                    }
+                }
+            }
+        } catch (DAOException e) {
+            throw new ServiceGetAllBooksException("Users were not received.", e);
+        }
+
+        if (result.isEmpty())
+            throw new ServiceEmptyDataException("No books by this author.");
+
+        return result;
+    }
+
+    public List<Book> findBooksByPublishing(Publishing publishing) throws ServiceException {
+        if (!new BookPublishingValidator().validate(publishing))
+            throw new ServicePublishingNotCorrectException("You entered invalid publishing.");
+
+        List<Book> books = null;
+        List<Book> result = null;
+
+        try {
+            books = bookDAO.getAll();
+            result = new ArrayList<>();
+
+            for (Book book : books) {
+                if (book.getPublishingBook() != null) {
+                    if (book.getPublishingBook().getNamePublishing().equalsIgnoreCase(publishing.getNamePublishing())){
                         result.add(book);
                     }
                 }
             }
+        } catch (DAOException e) {
+            throw new ServiceGetAllBooksException("Users were not received.", e);
         }
+
+        if (result.isEmpty())
+            throw new ServiceEmptyDataException("No books by this publishing.");
 
         return result;
     }
 
-    public List<Book> findBooksByPublishing(Publishing publishing) {
-        if (!new BookPublishingValidator().validate(publishing))
-            System.out.println("Exception null or empty");
+    public List<Book> findBooksByCountPages(int count) throws ServiceException {
+        if (!new BookCountPagesValidator().validate(count))
+            throw new ServiceCountPagesNotCorrectException("You entered invalid count pages.");
 
-        DAOFactory dao = DAOFactory.getDAOFactory("XML");
-        List<Book> books = dao.getBookDAO().getAll();
-        List<Book> result = new ArrayList<>();
+        List<Book> books = null;
+        List<Book> result = null;
 
-        for (Book book : books) {
-            if (book.getPublishingBook() != null) {
-                if (book.getPublishingBook().getNamePublishing().equals(publishing.getNamePublishing())){
+        try {
+            books = bookDAO.getAll();
+            result = new ArrayList<>();
+
+            for (Book book : books) {
+                if (book.getCountPagesBook() == count) {
                     result.add(book);
                 }
             }
+        } catch (DAOException e) {
+            throw new ServiceGetAllBooksException("Users were not received.", e);
         }
 
-        return result;
-    }
-
-    public List<Book> findBooksByCountPages(int count) {
-        if (!new BookCountPagesValidator().validate(count))
-            System.out.println("Exception not correct argument");
-
-        DAOFactory dao = DAOFactory.getDAOFactory("XML");
-        List<Book> books = dao.getBookDAO().getAll();
-        List<Book> result = new ArrayList<>();
-
-        for (Book book : books) {
-            if (book.getCountPagesBook() == count) {
-                result.add(book);
-            }
-        }
+        if (result.isEmpty())
+            throw new ServiceEmptyDataException("No books by this count pages.");
 
         return result;
     }
