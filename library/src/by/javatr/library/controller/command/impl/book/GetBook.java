@@ -16,7 +16,6 @@ public class GetBook implements Command {
         BookServiceImpl libraryService = serviceFactory.getBookService();
 
         String currentCommand = request.substring(request.indexOf("?") + 1, request.lastIndexOf("?"));
-        System.out.println(currentCommand);
         String[] split = request.substring(request.lastIndexOf("?") + 1).split(PARAM_DELIMITER);
 
         try {

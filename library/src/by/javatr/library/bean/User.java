@@ -1,6 +1,8 @@
 package by.javatr.library.bean;
 
-public class User implements Cloneable {
+import java.io.Serializable;
+
+public class User implements Cloneable, Serializable {
     private long idUser;
     private String nameUser;
     private String passwordUser;
@@ -16,35 +18,35 @@ public class User implements Cloneable {
         this.roleUser = roleUser;
     }
 
-    public long getIdUser() {
+    public final long getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(long idUser) {
+    public final void setIdUser(long idUser) {
         this.idUser = idUser;
     }
 
-    public String getNameUser() {
+    public final String getNameUser() {
         return nameUser;
     }
 
-    public void setNameUser(String nameUser) {
+    public final void setNameUser(String nameUser) {
         this.nameUser = nameUser;
     }
 
-    public String getPasswordUser() {
+    public final String getPasswordUser() {
         return passwordUser;
     }
 
-    public void setPasswordUser(String passwordUser) {
+    public final void setPasswordUser(String passwordUser) {
         this.passwordUser = passwordUser;
     }
 
-    public Role getRoleUser() {
+    public final Role getRoleUser() {
         return roleUser;
     }
 
-    public void setRoleUser(Role roleUser) {
+    public final void setRoleUser(Role roleUser) {
         this.roleUser = roleUser;
     }
 

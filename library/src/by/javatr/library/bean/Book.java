@@ -1,6 +1,8 @@
 package by.javatr.library.bean;
 
-public class Book implements Cloneable {
+import java.io.Serializable;
+
+public class Book implements Cloneable, Serializable {
     private long idBook;
     private String nameBook;
     private Author[] authorsBook;
@@ -41,45 +43,59 @@ public class Book implements Cloneable {
         this.countPagesBook = countPagesBook;
     }
 
-    public long getIdBook() {
+    public final long getIdBook() {
         return idBook;
     }
 
-    public void setIdBook(long idBook) {
+    public final void setIdBook(long idBook) {
         this.idBook = idBook;
     }
 
-    public String getNameBook() {
+    public final String getNameBook() {
         return nameBook;
     }
 
-    public void setNameBook(String nameBook) {
+    public final void setNameBook(String nameBook) {
         this.nameBook = nameBook;
     }
 
     //
-    public Author[] getAuthorsBook() {
-        return authorsBook;
+    public final Author[] getAuthorsBook() {
+        Author[] clone = new Author[authorsBook.length];
+
+        for (int i = 0; i < clone.length; i++){
+            try {
+                clone[i] = authorsBook[i].clone();
+            } catch (CloneNotSupportedException e) {
+                clone[i] = new Author();
+            }
+        }
+
+        return clone;
     }
 
-    public void setAuthorsBook(Author[] authorsBook) {
+    public final void setAuthorsBook(Author[] authorsBook) {
         this.authorsBook = authorsBook;
     }
 
     //
-    public Publishing getPublishingBook() {
-        return publishingBook;
+    public final Publishing getPublishingBook() {
+        try {
+            return publishingBook.clone();
+        } catch (CloneNotSupportedException e) {
+            return new Publishing();
+        }
     }
 
-    public void setPublishingBook(Publishing publishingBook) {
+    public final void setPublishingBook(Publishing publishingBook) {
         this.publishingBook = publishingBook;
     }
 
-    public int getCountPagesBook() {
+    public final int getCountPagesBook() {
         return countPagesBook;
     }
 
-    public void setCountPagesBook(int countPagesBook) {
+    public final void setCountPagesBook(int countPagesBook) {
         this.countPagesBook = countPagesBook;
     }
 

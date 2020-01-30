@@ -31,11 +31,9 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
 
     private final static String path;
     static {
-        FileInputStream fs;
         Properties property = new Properties();
 
-        try {
-            fs = new FileInputStream("src/resources/config/config.properties");
+        try (FileInputStream fs = new FileInputStream("src/resources/config/config.properties")){
             property.load(fs);
         } catch (IOException e) {
             //logger

@@ -1,8 +1,11 @@
 package by.javatr.library.bean;
 
-public class Author implements Cloneable{
+import java.io.Serializable;
+
+public class Author implements Cloneable, Serializable {
     private String authorFirstName;
     private String authorSecondName;
+
 
     public Author() {
     }
@@ -12,19 +15,19 @@ public class Author implements Cloneable{
         this.authorSecondName = authorSecondName;
     }
 
-    public String getAuthorFirstName() {
+    public final String getAuthorFirstName() {
         return authorFirstName;
     }
 
-    public void setAuthorFirstName(String authorFirstName) {
+    public final void setAuthorFirstName(String authorFirstName) {
         this.authorFirstName = authorFirstName;
     }
 
-    public String getAuthorSecondName() {
+    public final String getAuthorSecondName() {
         return authorSecondName;
     }
 
-    public void setAuthorSecondName(String authorSecondName) {
+    public final void setAuthorSecondName(String authorSecondName) {
         this.authorSecondName = authorSecondName;
     }
 

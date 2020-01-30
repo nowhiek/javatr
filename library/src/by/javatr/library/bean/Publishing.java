@@ -1,6 +1,8 @@
 package by.javatr.library.bean;
 
-public class Publishing implements Cloneable {
+import java.io.Serializable;
+
+public class Publishing implements Cloneable, Serializable {
     private long idPublishing;
     private String namePublishing;
     private String countryPublishing;
@@ -14,27 +16,27 @@ public class Publishing implements Cloneable {
         this.countryPublishing = countryPublishing;
     }
 
-    public long getIdPublishing() {
+    public final long getIdPublishing() {
         return idPublishing;
     }
 
-    public void setIdPublishing(long idPublishing) {
+    public final void setIdPublishing(long idPublishing) {
         this.idPublishing = idPublishing;
     }
 
-    public String getNamePublishing() {
+    public final String getNamePublishing() {
         return namePublishing;
     }
 
-    public void setNamePublishing(String namePublishing) {
+    public final void setNamePublishing(String namePublishing) {
         this.namePublishing = namePublishing;
     }
 
-    public String getCountryPublishing() {
+    public final String getCountryPublishing() {
         return countryPublishing;
     }
 
-    public void setCountryPublishing(String countryPublishing) {
+    public final void setCountryPublishing(String countryPublishing) {
         this.countryPublishing = countryPublishing;
     }
 
