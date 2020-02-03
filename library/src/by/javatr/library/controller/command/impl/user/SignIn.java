@@ -23,6 +23,6 @@ public class SignIn implements Command {
             return e.getMessage();
         }
 
-        return (user.getPasswordUser() != null && user.getPasswordUser().equals(password)) ? "Success, login ".concat(user.getRoleUser().getTitle()) : "Fail.";
+        return (user.getPasswordUser() != null && user.getPasswordUser().equals(password)) ? "Success." : "Fail.";
     }
 }

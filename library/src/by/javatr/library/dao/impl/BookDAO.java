@@ -4,6 +4,7 @@ import by.javatr.library.bean.Author;
 import by.javatr.library.bean.Book;
 import by.javatr.library.bean.Publishing;
 import by.javatr.library.dao.LibraryDAO;
+import by.javatr.library.dao.factory.DAOFactory;
 import by.javatr.library.exception.dao.DAOException;
 import by.javatr.library.exception.dao.DAOFileParseException;
 import org.w3c.dom.Document;
@@ -20,26 +21,21 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class BookDAO implements LibraryDAO <Book, Integer> {
 
-    private final static String path;
-    static {
-        Properties property = new Properties();
+    private String path;
 
-        try (FileInputStream fs = new FileInputStream("src/resources/config/config.properties")){
-            property.load(fs);
-        } catch (IOException e) {
-            //logger
-        }
+    public BookDAO(String path){
+        this.path = path;
+    }
 
-        path = property.getProperty("file.books");
+    public BookDAO(){
+        path = DAOFactory.getConnection("file.books");
     }
 
     @Override
@@ -105,7 +101,7 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
                 }
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return result;
@@ -177,7 +173,7 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
                 }
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return result;
@@ -253,7 +249,7 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
             StreamResult result = new StreamResult(path);
             transformer.transform(source, result);
         } catch (IOException | ParserConfigurationException | SAXException | TransformerException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return true;
@@ -327,7 +323,7 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
                 }
             }
         } catch (ParserConfigurationException | IOException | TransformerException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return true;

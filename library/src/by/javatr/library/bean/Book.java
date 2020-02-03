@@ -78,13 +78,15 @@ public class Book implements Cloneable, Serializable {
         this.authorsBook = authorsBook;
     }
 
-    //
     public final Publishing getPublishingBook() {
-        try {
-            return publishingBook.clone();
-        } catch (CloneNotSupportedException e) {
-            return new Publishing();
-        }
+        return publishingBook;
+
+        //Some problems, #TODO
+        //try {
+            //return publishingBook.clone();
+        //} catch (CloneNotSupportedException e) {
+            //return new Publishing();
+        //}
     }
 
     public final void setPublishingBook(Publishing publishingBook) {

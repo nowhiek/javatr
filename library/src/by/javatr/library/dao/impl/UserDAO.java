@@ -3,6 +3,7 @@ package by.javatr.library.dao.impl;
 import by.javatr.library.bean.Role;
 import by.javatr.library.bean.User;
 import by.javatr.library.dao.LibraryDAO;
+import by.javatr.library.dao.factory.DAOFactory;
 import by.javatr.library.exception.dao.DAOException;
 import by.javatr.library.exception.dao.DAOFileParseException;
 import org.w3c.dom.Document;
@@ -19,26 +20,21 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class UserDAO implements LibraryDAO <User, Integer> {
 
-    private final static String path;
-    static {
-        Properties property = new Properties();
+    private String path;
 
-        try (FileInputStream fs = new FileInputStream("src/resources/config/config.properties")){
-            property.load(fs);
-        } catch (IOException e) {
-            //logger
-        }
+    public UserDAO(String path){
+        this.path = path;
+    }
 
-        path = property.getProperty("file.users");
+    public UserDAO(){
+        path = DAOFactory.getConnection("file.users");
     }
 
     @Override
@@ -69,7 +65,7 @@ public class UserDAO implements LibraryDAO <User, Integer> {
                 }
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return result;
@@ -106,7 +102,7 @@ public class UserDAO implements LibraryDAO <User, Integer> {
                 }
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return tmpUser;
@@ -156,7 +152,7 @@ public class UserDAO implements LibraryDAO <User, Integer> {
                 transformer.transform(new DOMSource(document), new StreamResult(new FileOutputStream(path)));
             }
         } catch (ParserConfigurationException | IOException | TransformerException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return true;
@@ -198,7 +194,7 @@ public class UserDAO implements LibraryDAO <User, Integer> {
             StreamResult result = new StreamResult(path);
             transformer.transform(source, result);
         } catch (SAXException | ParserConfigurationException | IOException | TransformerException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return true;
@@ -243,7 +239,7 @@ public class UserDAO implements LibraryDAO <User, Integer> {
                 }
             }
         } catch (ParserConfigurationException | IOException | TransformerException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return true;
@@ -276,7 +272,7 @@ public class UserDAO implements LibraryDAO <User, Integer> {
                 }
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            throw new DAOFileParseException(e);
+            throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
         return false;

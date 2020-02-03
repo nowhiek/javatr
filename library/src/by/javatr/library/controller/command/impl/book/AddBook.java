@@ -23,6 +23,7 @@ public class AddBook implements Command {
         String paramPublishing = split[3];
         int countPage = Integer.parseInt(split[4]);
 
+
         Book book = new Book();
 
         book.setIdBook(id);
@@ -34,7 +35,7 @@ public class AddBook implements Command {
         try {
             return libraryService.create(book) ? "Book added." : "Book not added.";
         } catch (ServiceException e) {
-            return "Method can't give you data.";
+            return e.getMessage();
         }
     }
 
