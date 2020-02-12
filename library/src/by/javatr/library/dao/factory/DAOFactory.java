@@ -21,15 +21,19 @@ public final class DAOFactory {
     }
 
     public static String getConnection(String property){
+        String result;
+
         Properties properties = new Properties();
 
-        try (FileInputStream fs = new FileInputStream("src/resources/config/config.properties")){
+        try (FileInputStream fs = new FileInputStream("resources/config/config.properties")){
             properties.load(fs);
+
+            result = properties.getProperty(property);
         } catch (IOException e) {
-            //logger
+            result = "resources/books.xml";
         }
 
-        return properties.getProperty(property);
+        return result;
     }
 
     public BookDAO getBookDAO(){

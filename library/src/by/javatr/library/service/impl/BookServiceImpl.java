@@ -8,7 +8,7 @@ import by.javatr.library.dao.impl.BookDAO;
 import by.javatr.library.exception.dao.DAOException;
 import by.javatr.library.exception.service.*;
 import by.javatr.library.service.LibraryService;
-import by.javatr.library.service.validator.impl.*;
+import by.javatr.library.service.validator.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,15 +29,12 @@ public class BookServiceImpl implements LibraryService <Book>{
             throw new ServiceGetAllBooksException(e);
         }
 
-        if (all.isEmpty())
-            throw new ServiceEmptyDataException("No books.");
-
         return all;
     }
 
     @Override
     public boolean create(Book entity) throws ServiceException {
-        if (!new BookValidator().validate(entity))
+        if (!BookValidator.validate(entity))
             throw new ServiceBookNotCorrectException("Book was not correct.");
 
         try {
@@ -49,19 +46,19 @@ public class BookServiceImpl implements LibraryService <Book>{
 
     @Override
     public boolean remove(int id) throws ServiceException {
-        if (!new IdentifierValidator().validate(id))
+        if (!IdentifierValidator.validate(id))
             throw new ServiceIdentifierNotCorrectException("You entered not valid id.");
 
         try {
             return (findEntityById(id) != null && bookDAO.remove(id));
         } catch (DAOException e) {
-            throw new ServiceRemoveUserException("The book was not deleted.", e);
+            throw new ServiceRemoveBookException("The book was not deleted.", e);
         }
     }
 
     @Override
     public boolean update(Book oldEntity, Book newEntity) throws ServiceException {
-        if (!new BookValidator().validate(newEntity))
+        if (!BookValidator.validate(newEntity))
             throw new ServiceBookNotCorrectException("Book was not correct.");
 
         try {
@@ -73,7 +70,7 @@ public class BookServiceImpl implements LibraryService <Book>{
 
     @Override
     public Book findEntityById(int id) throws ServiceException {
-        if (!new IdentifierValidator().validate(id))
+        if (!IdentifierValidator.validate(id))
             throw new ServiceIdentifierNotCorrectException("You entered not valid id.");
 
         Book book = null;
@@ -84,15 +81,12 @@ public class BookServiceImpl implements LibraryService <Book>{
             throw new ServiceGetAllBooksException("Book was not received.", e);
         }
 
-        if (book == null)
-            throw new ServiceBookNotFoundException("This book not founded.");
-
         return book;
     }
 
     @Override
     public Book findEntityByName(String bookName) throws ServiceException {
-        if (!new NameValidator().validate(bookName))
+        if (!NameValidator.validate(bookName))
             throw new ServiceNameNotCorrectException("You entered not valid name.");
 
         List<Book> books = null;
@@ -111,9 +105,6 @@ public class BookServiceImpl implements LibraryService <Book>{
         } catch (DAOException e) {
             throw new ServiceGetAllBooksException("Book was not received.", e);
         }
-
-        if (book == null)
-            throw new ServiceBookNotFoundException("This book not founded.");
 
         return book;
     }
@@ -134,7 +125,7 @@ public class BookServiceImpl implements LibraryService <Book>{
     }
 
     public List<Book> findBooksByAuthor(Author author) throws ServiceException {
-        if (!new BookAuthorValidator().validate(author))
+        if (!BookAuthorValidator.validate(author))
             throw new ServiceNameNotCorrectException("You entered not valid author name.");
 
         List<Book> books = null;
@@ -157,14 +148,11 @@ public class BookServiceImpl implements LibraryService <Book>{
             throw new ServiceGetAllBooksException("Users were not received.", e);
         }
 
-        if (result.isEmpty())
-            throw new ServiceEmptyDataException("No books by this author.");
-
         return result;
     }
 
     public List<Book> findBooksByPublishing(Publishing publishing) throws ServiceException {
-        if (!new BookPublishingValidator().validate(publishing))
+        if (!BookPublishingValidator.validate(publishing))
             throw new ServicePublishingNotCorrectException("You entered invalid publishing.");
 
         List<Book> books = null;
@@ -185,14 +173,11 @@ public class BookServiceImpl implements LibraryService <Book>{
             throw new ServiceGetAllBooksException("Users were not received.", e);
         }
 
-        if (result.isEmpty())
-            throw new ServiceEmptyDataException("No books by this publishing.");
-
         return result;
     }
 
     public List<Book> findBooksByCountPages(int count) throws ServiceException {
-        if (!new BookCountPagesValidator().validate(count))
+        if (!BookCountPagesValidator.validate(count))
             throw new ServiceCountPagesNotCorrectException("You entered invalid count pages.");
 
         List<Book> books = null;
@@ -210,9 +195,6 @@ public class BookServiceImpl implements LibraryService <Book>{
         } catch (DAOException e) {
             throw new ServiceGetAllBooksException("Users were not received.", e);
         }
-
-        if (result.isEmpty())
-            throw new ServiceEmptyDataException("No books by this count pages.");
 
         return result;
     }

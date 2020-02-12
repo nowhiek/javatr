@@ -6,9 +6,9 @@ import by.javatr.library.dao.impl.UserDAO;
 import by.javatr.library.exception.dao.DAOException;
 import by.javatr.library.exception.service.*;
 import by.javatr.library.service.LibraryService;
-import by.javatr.library.service.validator.impl.IdentifierValidator;
-import by.javatr.library.service.validator.impl.NameValidator;
-import by.javatr.library.service.validator.impl.UserValidator;
+import by.javatr.library.service.validator.IdentifierValidator;
+import by.javatr.library.service.validator.NameValidator;
+import by.javatr.library.service.validator.UserValidator;
 
 import java.util.Comparator;
 import java.util.List;
@@ -28,9 +28,6 @@ public class UserServiceImpl implements LibraryService <User> {
             throw new ServiceGetAllUsersException("Users were not received.", e);
         }
 
-        if (all.isEmpty())
-            throw new ServiceEmptyDataException("No users.");
-
         return all;
     }
 
@@ -45,7 +42,7 @@ public class UserServiceImpl implements LibraryService <User> {
 
     @Override
     public boolean remove(int id) throws ServiceException {
-        if (!new IdentifierValidator().validate(id))
+        if (!IdentifierValidator.validate(id))
             throw new ServiceIdentifierNotCorrectException("You entered not valid id.");
 
         try {
@@ -57,7 +54,7 @@ public class UserServiceImpl implements LibraryService <User> {
 
     @Override
     public boolean update(User oldEntity, User newEntity) throws ServiceException {
-        if (!new UserValidator().validate(newEntity))
+        if (!UserValidator.validate(newEntity))
             throw new ServiceUserNotCorrectException("User was not correct.");
 
         try {
@@ -69,7 +66,7 @@ public class UserServiceImpl implements LibraryService <User> {
 
     @Override
     public User findEntityById(int id) throws ServiceException {
-        if (!new IdentifierValidator().validate(id))
+        if (!IdentifierValidator.validate(id))
             throw new ServiceIdentifierNotCorrectException("You entered not valid id.");
 
         User user = null;
@@ -79,9 +76,6 @@ public class UserServiceImpl implements LibraryService <User> {
         } catch (DAOException e) {
             throw new ServiceGetAllUsersException("User was not received.", e);
         }
-
-        if (user == null)
-            throw new ServiceUserNotFoundException("This user not founded.");
 
         return user;
     }
@@ -103,7 +97,7 @@ public class UserServiceImpl implements LibraryService <User> {
 
     @Override
     public User findEntityByName(String userName) throws ServiceException {
-        if (!new NameValidator().validate(userName))
+        if (!NameValidator.validate(userName))
             throw new ServiceNameNotCorrectException("You entered not valid name.");
 
         List<User> users = null;
@@ -121,14 +115,11 @@ public class UserServiceImpl implements LibraryService <User> {
             throw new ServiceGetAllUsersException("Users were not received.");
         }
 
-        if (user == null)
-            throw new ServiceUserNotFoundException("This user not founded.");
-
         return user;
     }
 
     private boolean isEntityExist(User entity) throws ServiceException {
-        if (!new UserValidator().validate(entity))
+        if (!UserValidator.validate(entity))
             throw new ServiceUserNotCorrectException("User was not correct.");
 
         try {
