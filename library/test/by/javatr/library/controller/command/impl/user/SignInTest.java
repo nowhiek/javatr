@@ -19,23 +19,12 @@ class SignInTest {
     }
 
     @Test
-    void signIn_Test_Not_Negative() {
+    void signIn_Test_Negative() {
         Controller controller = new Controller();
 
         String expected = "Fail.";
 
         String actual = controller.executeTask("SIGN_IN?TestTest&1234");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void signIn_Test_Not_Not_Found() {
-        Controller controller = new Controller();
-
-        String expected = "This user not founded.";
-
-        String actual = controller.executeTask("SIGN_IN?NOT_FOUND&NOT_FOUND");
 
         assertEquals(expected, actual);
     }

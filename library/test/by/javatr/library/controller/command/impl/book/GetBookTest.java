@@ -43,17 +43,6 @@ class GetBookTest {
     }
 
     @Test
-    void getBook_Test_By_Id_Not_Found() {
-        Controller controller = new Controller();
-
-        String expected = "This book not founded.";
-
-        String actual = controller.executeTask("GET_BOOK?BY_ID?20&");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
     void getBook_Test_By_Name_Positive() {
         Controller controller = new Controller();
 
@@ -68,17 +57,6 @@ class GetBookTest {
         }
 
         String actual = controller.executeTask("GET_BOOK?BY_NAME?Test&");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getBook_Test_By_Name_Not_Found() {
-        Controller controller = new Controller();
-
-        String expected = "This book not founded.";
-
-        String actual = controller.executeTask("GET_BOOK?BY_NAME?NOT_FOUND&");
 
         assertEquals(expected, actual);
     }
@@ -105,17 +83,6 @@ class GetBookTest {
     }
 
     @Test
-    void getBook_Test_By_Author_Not_Found() {
-        Controller controller = new Controller();
-
-        String expected = "No books by this author.";
-
-        String actual = controller.executeTask("GET_BOOK?BY_AUTHOR?NOT_FOUND&NOT_FOUND");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
     void getBook_Test_By_Publishing_Positive() {
         Controller controller = new Controller();
 
@@ -132,17 +99,6 @@ class GetBookTest {
         }
 
         String actual = controller.executeTask("GET_BOOK?BY_PUBLISHING?Ekb&");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getBook_Test_By_Publishing_Not_Found() {
-        Controller controller = new Controller();
-
-        String expected = "No books by this publishing.";
-
-        String actual = controller.executeTask("GET_BOOK?BY_PUBLISHING?NOT_FOUND&");
 
         assertEquals(expected, actual);
     }
@@ -173,17 +129,6 @@ class GetBookTest {
         String expected = "You entered invalid count pages.";
 
         String actual = controller.executeTask("GET_BOOK?BY_COUNT_PAGES?-2&");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getBook_Test_By_Count_Pages_Not_Found() {
-        Controller controller = new Controller();
-
-        String expected = "No books by this count pages.";
-
-        String actual = controller.executeTask("GET_BOOK?BY_COUNT_PAGES?9990&");
 
         assertEquals(expected, actual);
     }

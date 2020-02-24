@@ -32,15 +32,4 @@ class RemoveBookTest {
 
         assertEquals(expected, actual);
     }
-
-    @Test
-    void removeBook_Test_Not_Found() {
-        Controller controller = new Controller();
-
-        String expected = "This book not founded.";
-
-        String actual = controller.executeTask("REMOVE_BOOK?999&");
-
-        assertEquals(expected, actual);
-    }
 }

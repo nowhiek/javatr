@@ -28,15 +28,4 @@ class UpdateBookTest {
 
         assertEquals(expected, actual);
     }
-
-    @Test
-    void updateBook_Test_Not_Found() {
-        Controller controller = new Controller();
-
-        String expected = "This book not founded.";
-
-        String actual = controller.executeTask("UPDATE_BOOK?999&NOT_FOUND&&&123&44&NOT_FOUND&NOT_FOUND:NOT_FOUND&1#NOT_FOUND#NOT_FOUND&123");
-
-        assertEquals(expected, actual);
-    }
 }

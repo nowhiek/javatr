@@ -5,23 +5,16 @@ import by.javatr.library.bean.Book;
 import by.javatr.library.bean.Publishing;
 import by.javatr.library.dao.LibraryDAO;
 import by.javatr.library.dao.factory.DAOFactory;
+import by.javatr.library.dao.util.UserParser;
 import by.javatr.library.exception.dao.DAOException;
 import by.javatr.library.exception.dao.DAOFileParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,62 +36,50 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
         List<Book> result = new ArrayList<>();
 
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(path);
-
-            document.getDocumentElement().normalize();
+            Document document = UserParser.getDocument(path);
             NodeList nodeList = document.getElementsByTagName("book");
 
             for (int i = 0; i < nodeList.getLength(); i++){
-                Node node = nodeList.item(i);
                 List<Author> authors = new ArrayList<>();
+                Element book = (Element) nodeList.item(i);
+                Book tmpBook = new Book();
 
-                if (node.getNodeType() == Node.ELEMENT_NODE){
-                    Element book = (Element) node;
-                    Book tmpBook = new Book();
+                tmpBook.setIdBook(Integer.parseInt(book.getAttribute("id")));
+                tmpBook.setNameBook(book.getElementsByTagName("book_name").item(0).getTextContent());
 
-                    tmpBook.setIdBook(Integer.parseInt(book.getAttribute("id")));
-                    tmpBook.setNameBook(book.getElementsByTagName("book_name").item(0).getTextContent());
+                NodeList authorList = book.getElementsByTagName("author");
 
-                    NodeList authorList = book.getElementsByTagName("author");
+                for (int j = 0; j < authorList.getLength(); j++){
+                    Element author = (Element) authorList.item(j);
+                    Author tmpAuthor = new Author();
 
-                    for (int j = 0; j < authorList.getLength(); j++){
-                        Node nodeAuthor = authorList.item(j);
+                    tmpAuthor.setAuthorFirstName(author.getElementsByTagName("author_first_name").item(0).getTextContent());
+                    tmpAuthor.setAuthorSecondName(author.getElementsByTagName("author_second_name").item(0).getTextContent());
 
-                        if (nodeAuthor.getNodeType() == Node.ELEMENT_NODE){
-                            Element author = (Element) nodeAuthor;
-                            Author tmpAuthor = new Author();
-
-                            tmpAuthor.setAuthorFirstName(author.getElementsByTagName("author_first_name").item(0).getTextContent());
-                            tmpAuthor.setAuthorSecondName(author.getElementsByTagName("author_second_name").item(0).getTextContent());
-
-                            authors.add(tmpAuthor);
-                        }
-                    }
-                    Author[] tmp = new Author[authors.size()];
-
-                    for (int k = 0; k < tmp.length; k++)
-                        tmp[k] = authors.get(k);
-
-                    tmpBook.setAuthorsBook(tmp);
-
-                    Publishing tmpPublihing = new Publishing();
-
-                    NodeList publNode = book.getElementsByTagName("publishing");
-                    Element publishing = (Element) publNode.item(0);
-
-                    if (publishing != null) {
-                        tmpPublihing.setIdPublishing(Integer.parseInt(publishing.getAttribute("id")));
-                        tmpPublihing.setNamePublishing(publishing.getElementsByTagName("publishing_name").item(0).getTextContent());
-                        tmpPublihing.setCountryPublishing(publishing.getElementsByTagName("publishing_country").item(0).getTextContent());
-                        tmpBook.setPublishingBook(tmpPublihing);
-                    }
-
-                    tmpBook.setCountPagesBook(Integer.parseInt(book.getElementsByTagName("count_pages").item(0).getTextContent()));
-
-                    result.add(tmpBook);
+                    authors.add(tmpAuthor);
                 }
+                Author[] tmp = new Author[authors.size()];
+
+                for (int k = 0; k < tmp.length; k++)
+                    tmp[k] = authors.get(k);
+
+                tmpBook.setAuthorsBook(tmp);
+
+                Publishing tmpPublihing = new Publishing();
+
+                NodeList publNode = book.getElementsByTagName("publishing");
+                Element publishing = (Element) publNode.item(0);
+
+                if (publishing != null) {
+                    tmpPublihing.setIdPublishing(Integer.parseInt(publishing.getAttribute("id")));
+                    tmpPublihing.setNamePublishing(publishing.getElementsByTagName("publishing_name").item(0).getTextContent());
+                    tmpPublihing.setCountryPublishing(publishing.getElementsByTagName("publishing_country").item(0).getTextContent());
+                    tmpBook.setPublishingBook(tmpPublihing);
+                }
+
+                tmpBook.setCountPagesBook(Integer.parseInt(book.getElementsByTagName("count_pages").item(0).getTextContent()));
+
+                result.add(tmpBook);
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
@@ -112,64 +93,54 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
         Book result = null;
 
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(path);
-
-            document.getDocumentElement().normalize();
+            Document document = UserParser.getDocument(path);
             NodeList nodeList = document.getElementsByTagName("book");
 
             for (int i = 0; i < nodeList.getLength(); i++){
-                Node node = nodeList.item(i);
                 List<Author> authors = new ArrayList<>();
 
-                if (node.getNodeType() == Node.ELEMENT_NODE){
-                    Element book = (Element) node;
+                Element book = (Element) nodeList.item(i);
 
-                    if (Integer.parseInt(book.getAttribute("id")) == id) {
-                        result = new Book();
+                if (Integer.parseInt(book.getAttribute("id")) == id) {
+                    result = new Book();
 
-                        result.setIdBook(Integer.parseInt(book.getAttribute("id")));
-                        result.setNameBook(book.getElementsByTagName("book_name").item(0).getTextContent());
+                    result.setIdBook(Integer.parseInt(book.getAttribute("id")));
+                    result.setNameBook(book.getElementsByTagName("book_name").item(0).getTextContent());
 
-                        NodeList authorList = book.getElementsByTagName("author");
+                    NodeList authorList = book.getElementsByTagName("author");
 
-                        for (int j = 0; j < authorList.getLength(); j++) {
-                            Node nodeAuthor = authorList.item(j);
+                    for (int j = 0; j < authorList.getLength(); j++) {
+                        Element author = (Element) authorList.item(j);
+                        Author tmpAuthor = new Author();
 
-                            if (nodeAuthor.getNodeType() == Node.ELEMENT_NODE) {
-                                Element author = (Element) nodeAuthor;
-                                Author tmpAuthor = new Author();
+                        tmpAuthor.setAuthorFirstName(author.getElementsByTagName("author_first_name").item(0).getTextContent());
+                        tmpAuthor.setAuthorSecondName(author.getElementsByTagName("author_second_name").item(0).getTextContent());
 
-                                tmpAuthor.setAuthorFirstName(author.getElementsByTagName("author_first_name").item(0).getTextContent());
-                                tmpAuthor.setAuthorSecondName(author.getElementsByTagName("author_second_name").item(0).getTextContent());
-
-                                authors.add(tmpAuthor);
-                            }
-                        }
-                        Author[] tmp = new Author[authors.size()];
-
-                        for (int k = 0; k < tmp.length; k++)
-                            tmp[k] = authors.get(k);
-
-                        result.setAuthorsBook(tmp);
-
-                        Publishing tmpPublihing = new Publishing();
-
-                        NodeList publNode = book.getElementsByTagName("publishing");
-                        Element publishing = (Element) publNode.item(0);
-
-                        if (publishing != null) {
-                            tmpPublihing.setIdPublishing(Integer.parseInt(publishing.getAttribute("id")));
-                            tmpPublihing.setNamePublishing(publishing.getElementsByTagName("publishing_name").item(0).getTextContent());
-                            tmpPublihing.setCountryPublishing(publishing.getElementsByTagName("publishing_country").item(0).getTextContent());
-                            result.setPublishingBook(tmpPublihing);
-                        }
-
-                        result.setCountPagesBook(Integer.parseInt(book.getElementsByTagName("count_pages").item(0).getTextContent()));
-
-                        break;
+                        authors.add(tmpAuthor);
                     }
+
+                    Author[] tmp = new Author[authors.size()];
+
+                    for (int k = 0; k < tmp.length; k++)
+                        tmp[k] = authors.get(k);
+
+                    result.setAuthorsBook(tmp);
+
+                    Publishing tmpPublihing = new Publishing();
+
+                    NodeList publNode = book.getElementsByTagName("publishing");
+                    Element publishing = (Element) publNode.item(0);
+
+                    if (publishing != null) {
+                        tmpPublihing.setIdPublishing(Integer.parseInt(publishing.getAttribute("id")));
+                        tmpPublihing.setNamePublishing(publishing.getElementsByTagName("publishing_name").item(0).getTextContent());
+                        tmpPublihing.setCountryPublishing(publishing.getElementsByTagName("publishing_country").item(0).getTextContent());
+                        result.setPublishingBook(tmpPublihing);
+                    }
+
+                    result.setCountPagesBook(Integer.parseInt(book.getElementsByTagName("count_pages").item(0).getTextContent()));
+
+                    break;
                 }
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -187,9 +158,7 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
     @Override
     public boolean create(Book entity) throws DAOException {
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(path);
+            Document document = UserParser.getDocument(path);
 
             Element root = document.getDocumentElement();
 
@@ -242,12 +211,7 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
 
             root.appendChild(book);
 
-            DOMSource source = new DOMSource(document);
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            StreamResult result = new StreamResult(path);
-            transformer.transform(source, result);
+            UserParser.writeToXML(path, document);
         } catch (IOException | ParserConfigurationException | SAXException | TransformerException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
@@ -260,10 +224,7 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
         try {
             List<Book> all = getAll();
 
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.newDocument();
-
+            Document document = UserParser.getDocument(path);
             Element rootElement = document.createElement("library");
             document.appendChild(rootElement);
 
@@ -317,12 +278,10 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
 
                     rootElement.appendChild(book);
 
-                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                    Transformer transformer = transformerFactory.newTransformer();
-                    transformer.transform(new DOMSource(document), new StreamResult(new FileOutputStream(path)));
+                    UserParser.writeToXML(path, document);
                 }
             }
-        } catch (ParserConfigurationException | IOException | TransformerException e) {
+        } catch (ParserConfigurationException | IOException | TransformerException | SAXException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 

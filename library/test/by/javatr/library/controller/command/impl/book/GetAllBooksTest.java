@@ -27,8 +27,6 @@ class GetAllBooksTest {
 
         String actual = controller.executeTask("GET_ALL_BOOKS?");
 
-        System.out.println(actual);
-
         assertEquals(expected, actual);
     }
 }

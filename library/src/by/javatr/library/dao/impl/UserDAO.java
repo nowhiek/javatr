@@ -4,23 +4,16 @@ import by.javatr.library.bean.Role;
 import by.javatr.library.bean.User;
 import by.javatr.library.dao.LibraryDAO;
 import by.javatr.library.dao.factory.DAOFactory;
+import by.javatr.library.dao.util.UserParser;
 import by.javatr.library.exception.dao.DAOException;
 import by.javatr.library.exception.dao.DAOFileParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,27 +35,19 @@ public class UserDAO implements LibraryDAO <User, Integer> {
         List<User> result = new ArrayList<>();
 
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(path);
-
-            document.getDocumentElement().normalize();
+            Document document = UserParser.getDocument(path);
             NodeList nodeList = document.getElementsByTagName("user");
 
             for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
+                Element user = (Element) nodeList.item(i);
+                User tmpUser = new User();
 
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element user = (Element) node;
-                    User tmpUser = new User();
+                tmpUser.setIdUser(Integer.parseInt(user.getAttribute("id")));
+                tmpUser.setNameUser(user.getElementsByTagName("user_name").item(0).getTextContent());
+                tmpUser.setPasswordUser(user.getElementsByTagName("user_password").item(0).getTextContent());
+                tmpUser.setRoleUser(Role.valueOf(user.getElementsByTagName("role").item(0).getTextContent().toUpperCase()));
 
-                    tmpUser.setIdUser(Integer.parseInt(user.getAttribute("id")));
-                    tmpUser.setNameUser(user.getElementsByTagName("user_name").item(0).getTextContent());
-                    tmpUser.setPasswordUser(user.getElementsByTagName("user_password").item(0).getTextContent());
-                    tmpUser.setRoleUser(Role.valueOf(user.getElementsByTagName("role").item(0).getTextContent().toUpperCase()));
-
-                    result.add(tmpUser);
-                }
+                result.add(tmpUser);
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
@@ -76,30 +61,23 @@ public class UserDAO implements LibraryDAO <User, Integer> {
         User tmpUser = null;
 
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(path);
-
-            document.getDocumentElement().normalize();
+            Document document = UserParser.getDocument(path);
             NodeList nodeList = document.getElementsByTagName("user");
 
             for (int i = 0; i < nodeList.getLength(); i++){
-                Node node = nodeList.item(i);
+                Element user = (Element) nodeList.item(i);
 
-                if (node.getNodeType() == Node.ELEMENT_NODE){
-                    Element user = (Element) node;
+                if (Integer.parseInt(user.getAttribute("id")) == id) {
+                    tmpUser = new User();
 
-                    if (Integer.parseInt(user.getAttribute("id")) == id) {
-                        tmpUser = new User();
+                    tmpUser.setIdUser(Integer.parseInt(user.getAttribute("id")));
+                    tmpUser.setNameUser(user.getElementsByTagName("user_name").item(0).getTextContent());
+                    tmpUser.setPasswordUser(user.getElementsByTagName("user_password").item(0).getTextContent());
+                    tmpUser.setRoleUser(Role.valueOf(user.getElementsByTagName("role").item(0).getTextContent().toUpperCase()));
 
-                        tmpUser.setIdUser(Integer.parseInt(user.getAttribute("id")));
-                        tmpUser.setNameUser(user.getElementsByTagName("user_name").item(0).getTextContent());
-                        tmpUser.setPasswordUser(user.getElementsByTagName("user_password").item(0).getTextContent());
-                        tmpUser.setRoleUser(Role.valueOf(user.getElementsByTagName("role").item(0).getTextContent().toUpperCase()));
-
-                        break;
-                    }
+                    break;
                 }
+
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
@@ -113,10 +91,7 @@ public class UserDAO implements LibraryDAO <User, Integer> {
         try {
             List<User> all = getAll();
 
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.newDocument();
-
+            Document document = UserParser.getDocument(path);
             Element rootElement = document.createElement("users");
             document.appendChild(rootElement);
 
@@ -129,29 +104,10 @@ public class UserDAO implements LibraryDAO <User, Integer> {
                     all.get(i).setRoleUser(newUser.getRoleUser());
                 }
 
-                Element user = document.createElement("user");
-                user.setAttribute("id", String.valueOf(all.get(i).getIdUser()));
-                rootElement.appendChild(user);
-
-                Element name = document.createElement("user_name");
-                name.appendChild(document.createTextNode(all.get(i).getNameUser()));
-                user.appendChild(name);
-
-                Element password = document.createElement("user_password");
-                password.appendChild(document.createTextNode(all.get(i).getPasswordUser()));
-                user.appendChild(password);
-
-                Element role = document.createElement("role");
-                role.appendChild(document.createTextNode(all.get(i).getRoleUser().getTitle()));
-                user.appendChild(role);
-
-                rootElement.appendChild(user);
-
-                TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                Transformer transformer = transformerFactory.newTransformer();
-                transformer.transform(new DOMSource(document), new StreamResult(new FileOutputStream(path)));
+                UserParser.appendChildes(document, all.get(i));
+                UserParser.writeToXML(path, document);
             }
-        } catch (ParserConfigurationException | IOException | TransformerException e) {
+        } catch (ParserConfigurationException | IOException | TransformerException | SAXException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
@@ -161,38 +117,10 @@ public class UserDAO implements LibraryDAO <User, Integer> {
     @Override
     public boolean create(User entity) throws DAOException {
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(path);
+            Document document = UserParser.getDocument(path);
 
-            Element root = document.getDocumentElement();
-
-            Element rootElement = document.getDocumentElement();
-
-            Element user = document.createElement("user");
-            user.setAttribute("id", String.valueOf(entity.getIdUser()));
-            rootElement.appendChild(user);
-
-            Element name = document.createElement("user_name");
-            name.appendChild(document.createTextNode(entity.getNameUser()));
-            user.appendChild(name);
-
-            Element password = document.createElement("user_password");
-            password.appendChild(document.createTextNode(entity.getPasswordUser()));
-            user.appendChild(password);
-
-            Element role = document.createElement("role");
-            role.appendChild(document.createTextNode(entity.getRoleUser().getTitle()));
-            user.appendChild(role);
-
-            root.appendChild(user);
-
-            DOMSource source = new DOMSource(document);
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            StreamResult result = new StreamResult(path);
-            transformer.transform(source, result);
+            UserParser.appendChildes(document, entity);
+            UserParser.writeToXML(path, document);
         } catch (SAXException | ParserConfigurationException | IOException | TransformerException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
@@ -205,40 +133,18 @@ public class UserDAO implements LibraryDAO <User, Integer> {
         try {
             List<User> all = getAll();
 
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.newDocument();
-
+            Document document = UserParser.getDocument(path);
             Element rootElement = document.createElement("users");
             document.appendChild(rootElement);
 
             for (int i = 0; i < all.size(); i++) {
 
                 if (all.get(i).getIdUser() != id) {
-                    Element user = document.createElement("user");
-                    user.setAttribute("id", String.valueOf(all.get(i).getIdUser()));
-                    rootElement.appendChild(user);
-
-                    Element name = document.createElement("user_name");
-                    name.appendChild(document.createTextNode(all.get(i).getNameUser()));
-                    user.appendChild(name);
-
-                    Element password = document.createElement("user_password");
-                    password.appendChild(document.createTextNode(all.get(i).getPasswordUser()));
-                    user.appendChild(password);
-
-                    Element role = document.createElement("role");
-                    role.appendChild(document.createTextNode(all.get(i).getRoleUser().getTitle()));
-                    user.appendChild(role);
-
-                    rootElement.appendChild(user);
-
-                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                    Transformer transformer = transformerFactory.newTransformer();
-                    transformer.transform(new DOMSource(document), new StreamResult(new FileOutputStream(path)));
+                    UserParser.appendChildes(document, all.get(i));
+                    UserParser.writeToXML(path, document);
                 }
             }
-        } catch (ParserConfigurationException | IOException | TransformerException e) {
+        } catch (ParserConfigurationException | IOException | TransformerException | SAXException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
         }
 
@@ -247,29 +153,22 @@ public class UserDAO implements LibraryDAO <User, Integer> {
 
     public boolean isUserExist(User entity) throws DAOFileParseException {
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document document = docBuilder.parse(path);
-
-            document.getDocumentElement().normalize();
+            Document document = UserParser.getDocument(path);
             NodeList nodeList = document.getElementsByTagName("user");
 
             for (int i = 0; i < nodeList.getLength(); i++){
-                Node node = nodeList.item(i);
+                Element user = (Element) nodeList.item(i);
+                User tmpUser = new User();
 
-                if (node.getNodeType() == Node.ELEMENT_NODE){
-                    Element user = (Element) node;
-                    User tmpUser = new User();
+                tmpUser.setIdUser(Integer.parseInt(user.getAttribute("id")));
+                tmpUser.setNameUser(user.getElementsByTagName("user_name").item(0).getTextContent());
+                tmpUser.setPasswordUser(user.getElementsByTagName("user_password").item(0).getTextContent());
+                tmpUser.setRoleUser(Role.USER);
 
-                    tmpUser.setIdUser(Integer.parseInt(user.getAttribute("id")));
-                    tmpUser.setNameUser(user.getElementsByTagName("user_name").item(0).getTextContent());
-                    tmpUser.setPasswordUser(user.getElementsByTagName("user_password").item(0).getTextContent());
-                    tmpUser.setRoleUser(Role.USER);
-
-                    if (tmpUser.getNameUser().equalsIgnoreCase(entity.getNameUser()) || tmpUser.getIdUser() == entity.getIdUser()){
-                        return true;
-                    }
+                if (tmpUser.getNameUser().equalsIgnoreCase(entity.getNameUser()) || tmpUser.getIdUser() == entity.getIdUser()){
+                    return true;
                 }
+
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new DAOFileParseException("Sorry, I'cant parse document.", e);
