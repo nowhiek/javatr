@@ -32,7 +32,7 @@ public class GetUser implements Command {
                     return new User().toString();
             }
         }catch (ServiceException e){
-            return e.getMessage();
+            return e.getMessage();// убиться тазиком, зачем ты такое делаешь?
         }
     }
 }
