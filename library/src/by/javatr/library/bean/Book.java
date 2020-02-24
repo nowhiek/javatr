@@ -3,6 +3,8 @@ package by.javatr.library.bean;
 import java.io.Serializable;
 
 public class Book implements Cloneable, Serializable {
+    // куда делся serialVersionUID 
+    // и зачем эти объекты клонировать?
     private long idBook;
     private String nameBook;
     private Author[] authorsBook;
@@ -61,7 +63,8 @@ public class Book implements Cloneable, Serializable {
 
     //
     public final Author[] getAuthorsBook() {
-        Author[] clone = new Author[authorsBook.length];
+        Author[] clone = new Author[authorsBook.length];// не сходи с ума
+        // ты так до второго пришествия запрос выполнять будешь
 
         for (int i = 0; i < clone.length; i++){
             try {
@@ -130,7 +133,8 @@ public class Book implements Cloneable, Serializable {
 
         if (authorsBook != null && authorsBook.length != 0){
             for (int i = 0; i < authorsBook.length; i++){
-                result = result * prime + authorsBook[i].hashCode();
+                result = result * prime + authorsBook[i].hashCode();// а на массиве hasCode вызвать?
+                // hashCode должен архибыстро вычисляться - а тут
             }
         }
 
@@ -166,7 +170,7 @@ public class Book implements Cloneable, Serializable {
             return false;
         }else {
             for (int i = 0; i < authorsBook.length; i++){
-                if (!authorsBook[i].equals(tmp.authorsBook[i])){
+                if (!authorsBook[i].equals(tmp.authorsBook[i])){// а коллекцией было бы краше
                     return false;
                 }
             }
