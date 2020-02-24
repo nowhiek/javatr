@@ -34,7 +34,7 @@ public class BookServiceImpl implements LibraryService <Book>{
 
     @Override
     public boolean create(Book entity) throws ServiceException {
-        if (!BookValidator.validate(entity))
+        if (!BookValidator.validate(entity))// {} , code convention мимо тебя прошел?
             throw new ServiceBookNotCorrectException("Book was not correct.");
 
         try {
