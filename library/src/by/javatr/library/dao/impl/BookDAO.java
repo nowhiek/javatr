@@ -28,7 +28,7 @@ import java.util.List;
 
 public class BookDAO implements LibraryDAO <Book, Integer> {
 
-    private String path;
+    private String path;// говорили же, что полей экземпляра класса изменяемых не используем
 
     public BookDAO(String path){
         this.path = path;
@@ -39,7 +39,7 @@ public class BookDAO implements LibraryDAO <Book, Integer> {
     }
 
     @Override
-    public List<Book> getAll() throws DAOException {
+    public List<Book> getAll() throws DAOException {// почему не орефакторил такой длинный метод?
         List<Book> result = new ArrayList<>();
 
         try {
