@@ -54,7 +54,6 @@ public class ConnectionPool {
 	}
 
 	public void initPoolData() throws ConnectionPoolException {
-		Locale.setDefault(Locale.ENGLISH);
 		try {
 			Class.forName(driverName);
 			givenAwayConQueue = new ArrayBlockingQueue(poolSize);

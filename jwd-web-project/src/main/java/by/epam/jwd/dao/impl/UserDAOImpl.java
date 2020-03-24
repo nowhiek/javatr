@@ -21,6 +21,9 @@ public class UserDAOImpl implements UserDAO {
 	private final static String GET_ALL_USERS = "SELECT * FROM User";
 	private final static String ADD_USER = "INSERT INTO User (id, userName, userPassword, userEmail, userRole, userStatus, isBanned) VALUES (default, ?, ?, ?, ?, ?, ?)";
 	private final static String GET_USER = "SELECT * from User WHERE id = ?";
+	private final static String UPDATE_USER = "UPDATE User SET (userPassword = ? AND userEmail = ? AND userRole = ?) WHERE userName = ?";
+	private final static String REMOVE_USER_BY_NAME = "DELETE FROM User WHERE userName = ?";
+	private final static String IS_USER_EXIST = "SELECT * FROM User WHERE userName = ?";
 	
 	@Override
 	public List<User> getAll() throws DAOException {
@@ -102,8 +105,32 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public boolean update(User user) throws DAOException {
-		// TODO Auto-generated method stub
-		return false;
+		ConnectionPool pool = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		boolean flag = false;
+		
+		try {
+			pool = ConnectionPool.getInstance();
+			pool.initPoolData();
+			
+			connection = pool.takeConnection();
+			ps = connection.prepareStatement(UPDATE_USER);
+			
+			ps.setString(1, user.getUserName());
+			
+			
+			ps.executeUpdate();
+			flag = true;
+		} catch (ConnectionPoolException e) {
+			throw new DAOException("Pool can't get connection.", e);
+		} catch (SQLException e) {
+			throw new DAOException("SQL can't get information.", e);
+		} finally {
+			pool.closeConnection(connection, ps);
+		}
+		
+		return flag;
 	}
 
 	@Override
@@ -142,18 +169,63 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public boolean remove(User user) throws DAOException {
-		// TODO Auto-generated method stub
-		return false;
+		ConnectionPool pool = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		boolean flag = false;
+		
+		try {
+			pool = ConnectionPool.getInstance();
+			pool.initPoolData();
+			
+			connection = pool.takeConnection();
+			ps = connection.prepareStatement(REMOVE_USER_BY_NAME);
+			
+			ps.setString(1, user.getUserPassword());
+			ps.setString(2, user.getUserEmail());
+			ps.setString(3, user.getUserRole().getTitle());
+			ps.setString(4, user.getUserName());
+			
+			ps.executeUpdate();
+			flag = true;
+		} catch (ConnectionPoolException e) {
+			throw new DAOException("Pool can't get connection.", e);
+		} catch (SQLException e) {
+			throw new DAOException("SQL can't get information.", e);
+		} finally {
+			pool.closeConnection(connection, ps);
+		}
+		
+		return flag;
 	}
 	
 	@Override
 	public boolean isUserExist(User user) throws DAOException {
-		List<User> all = getAll();
-		
-		for	(int i = 0; i < all.size(); i++) {
-			if (user.getUserName().equalsIgnoreCase(all.get(i).getUserName())) {
+		ConnectionPool pool = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+	
+		try {
+			pool = ConnectionPool.getInstance();
+			pool.initPoolData();
+			
+			connection = pool.takeConnection();
+			ps = connection.prepareStatement(IS_USER_EXIST);
+			
+			ps.setString(1, user.getUserName());
+			
+			rs = ps.executeQuery();
+			
+			if (rs.getRow() > 0) {
 				return true;
 			}
+		} catch (ConnectionPoolException e) {
+			throw new DAOException("Pool can't get connection.", e);
+		} catch (SQLException e) {
+			throw new DAOException("SQL can't get information.", e);
+		} finally {
+			pool.closeConnection(connection, ps, rs);
 		}
 		
 		return false;

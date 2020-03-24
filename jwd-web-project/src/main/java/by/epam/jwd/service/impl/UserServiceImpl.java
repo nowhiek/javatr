@@ -4,7 +4,7 @@ import java.util.List;
 
 import by.epam.jwd.bean.User;
 import by.epam.jwd.dao.UserDAO;
-import by.epam.jwd.dao.factory.DAOFactory;
+import by.epam.jwd.dao.factory.impl.SqlDAOFactory;
 import by.epam.jwd.exception.dao.DAOException;
 import by.epam.jwd.exception.service.ServiceCreateUserException;
 import by.epam.jwd.exception.service.ServiceException;
@@ -18,8 +18,8 @@ import by.epam.jwd.service.validator.StringValidator;
 
 public class UserServiceImpl implements UserService {
 
-	private DAOFactory daoFactory = DAOFactory.getInstance();
-	private UserDAO userDAO = daoFactory.getUserDAO();
+	private SqlDAOFactory sqlDAOFactory = SqlDAOFactory.getInstance();
+	private UserDAO userDAO = sqlDAOFactory.getUserDAO();
 	
 	@Override
 	public boolean create(User user) throws ServiceException {

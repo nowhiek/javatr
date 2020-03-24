@@ -12,7 +12,7 @@ import by.epam.jwd.service.UserService;
 import by.epam.jwd.service.factory.ServiceFactory;
 
 public class SignIn implements Command {
-
+	
 	@Override
 	public String execute(HttpServletRequest request) {
 		ServiceFactory serviceFactory = ServiceFactory.getInstance();
@@ -28,6 +28,7 @@ public class SignIn implements Command {
 			page = JSPPageName.AUTH_PAGE;
 			request.setAttribute("auth_user", userName);
 		} catch (ServiceSignInException | ServiceUserNotFoundException | ServiceUserPasswordNotEqualsException e) {
+			//change e.getMessage();
 			request.setAttribute("message", e.getMessage());
 		} catch (ServiceException e) {
 			page = JSPPageName.ERROR_PAGE;

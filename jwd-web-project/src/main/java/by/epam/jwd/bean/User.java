@@ -1,6 +1,10 @@
 package by.epam.jwd.bean;
 
-public final class User {
+import java.io.Serializable;
+
+public final class User implements Serializable {
+	
+	private static final long serialVersionUID = 182481293213L;
 	
 	private String userName;
 	private String userPassword;
